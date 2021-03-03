@@ -1,0 +1,11 @@
+main {
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+main #canvas {
+    border: 1px solid black;
+    display: block;
+    margin: 10px auto;
+}
