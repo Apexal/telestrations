@@ -24,6 +24,7 @@ export default class SketchPadRenderer extends Component {
     
         this.clear = this.clear.bind(this);
         this.onClear = this.onClear.bind(this);
+        this.onUndo = this.onUndo.bind(this);
         this.drawStroke = this.drawStroke.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseClick = this.onMouseClick.bind(this);
@@ -108,13 +109,22 @@ export default class SketchPadRenderer extends Component {
         this.setState({ strokes: [] });
     }
 
+    onUndo() {
+        if(this.state.strokes.length <= 0)
+            return;
+        
+        let strokes = this.state.strokes;
+        strokes.pop();
+        this.setState({ strokes });
+    }
+
     render() {
         return (
             <div>
                 <canvas ref={this.canvas} width="400" height="400">
                     Sorry, your browser does not support canvas.
                 </canvas>
-                <SketchControlBar onClear={this.onClear} />
+                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} />
             </div>
         )
     }
