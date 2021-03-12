@@ -70,6 +70,28 @@ export default class SketchPadRenderer extends Component {
         this.setState({ context: ctx });
     }
 
+    distance(posA, posB) {
+        return Math.sqrt(Math.pow(posA.x - posB.x, 2) + Math.pow(posA.y - posB.y, 2));
+    }
+      
+    samePos(posA, posB) {
+        return posA.x == posB.x && posA.y == posB.y;
+    }
+      
+    optimizeStrokes(anyStrokes) {
+        for (let i = 2; i < anyStrokes.length; i++) {
+            const stroke = anyStrokes[i];
+            const prevStroke = anyStrokes[i-1];
+            const prevPrevStroke = anyStrokes[i-2];
+      
+            if (this.distance(prevStroke.from, stroke.from) <= 2 && this.samePos(prevPrevStroke.to, prevStroke.from)) {
+                console.log("OPTIMIZING");
+                anyStrokes.splice(i-1, 1); 
+                prevPrevStroke.to = stroke.from;
+            }
+        }
+    }
+
     setCurrentPosition(x, y) {
         this.setState({ currentPosition: { x, y } });
     }
@@ -88,6 +110,7 @@ export default class SketchPadRenderer extends Component {
         };
 
         const strokes = this.state.strokes.concat(stroke);
+        this.optimizeStrokes(strokes);
         this.setState({ strokes });
 
         this.drawStroke(stroke);
@@ -120,6 +143,8 @@ export default class SketchPadRenderer extends Component {
         
         let strokes = this.state.strokes;
         strokes.pop();
+
+        this.optimizeStrokes(strokes);
         this.setState({ strokes });
     }
 
