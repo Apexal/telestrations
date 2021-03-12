@@ -6,7 +6,7 @@ export default function SketchControlBar(props) {
             <button onClick={props.onClear} id="clear">Clear</button>
             <button id="undo" onClick={props.onUndo} >Undo</button>
             <button id="submit">Submit</button>
-            <button id="replay">Replay</button>
+            <button id="replay" onClick={props.onReplay} >Replay</button>
             <button id="download">Download</button>
         </div>
     )

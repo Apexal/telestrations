@@ -25,7 +25,10 @@ export default class SketchPadRenderer extends Component {
         this.clear = this.clear.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onUndo = this.onUndo.bind(this);
+        this.onReplay = this.onReplay.bind(this);
+
         this.drawStroke = this.drawStroke.bind(this);
+        
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseClick = this.onMouseClick.bind(this);
         this.onMouseReleased = this.onMouseReleased.bind(this);
@@ -118,13 +121,22 @@ export default class SketchPadRenderer extends Component {
         this.setState({ strokes });
     }
 
+    onReplay() {
+        this.clear();
+        let replayTimeouts = [];
+        
+        for (let i = 0; i < this.state.strokes.length; i++) {
+            replayTimeouts.push(setTimeout(() => this.drawStroke(this.state.strokes[i]), 10 * i));
+        }
+    }
+
     render() {
         return (
             <div>
                 <canvas ref={this.canvas} width="400" height="400">
                     Sorry, your browser does not support canvas.
                 </canvas>
-                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} />
+                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} onReplay={this.onReplay} />
             </div>
         )
     }
