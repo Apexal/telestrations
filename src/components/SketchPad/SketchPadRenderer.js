@@ -25,7 +25,12 @@ export default class SketchPadRenderer extends Component {
         this.clear = this.clear.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onUndo = this.onUndo.bind(this);
+        this.onReplay = this.onReplay.bind(this);
+        this.onDownload = this.onDownload.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+
         this.drawStroke = this.drawStroke.bind(this);
+        
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseClick = this.onMouseClick.bind(this);
         this.onMouseReleased = this.onMouseReleased.bind(this);
@@ -65,6 +70,28 @@ export default class SketchPadRenderer extends Component {
         this.setState({ context: ctx });
     }
 
+    distance(posA, posB) {
+        return Math.sqrt(Math.pow(posA.x - posB.x, 2) + Math.pow(posA.y - posB.y, 2));
+    }
+      
+    samePos(posA, posB) {
+        return posA.x == posB.x && posA.y == posB.y;
+    }
+      
+    optimizeStrokes(anyStrokes) {
+        for (let i = 2; i < anyStrokes.length; i++) {
+            const stroke = anyStrokes[i];
+            const prevStroke = anyStrokes[i-1];
+            const prevPrevStroke = anyStrokes[i-2];
+      
+            if (this.distance(prevStroke.from, stroke.from) <= 2 && this.samePos(prevPrevStroke.to, prevStroke.from)) {
+                console.log("OPTIMIZING");
+                anyStrokes.splice(i-1, 1); 
+                prevPrevStroke.to = stroke.from;
+            }
+        }
+    }
+
     setCurrentPosition(x, y) {
         this.setState({ currentPosition: { x, y } });
     }
@@ -83,6 +110,7 @@ export default class SketchPadRenderer extends Component {
         };
 
         const strokes = this.state.strokes.concat(stroke);
+        this.optimizeStrokes(strokes);
         this.setState({ strokes });
 
         this.drawStroke(stroke);
@@ -115,7 +143,27 @@ export default class SketchPadRenderer extends Component {
         
         let strokes = this.state.strokes;
         strokes.pop();
+
+        this.optimizeStrokes(strokes);
         this.setState({ strokes });
+    }
+
+    onReplay() {
+        this.clear();
+        let replayTimeouts = [];
+        
+        for (let i = 0; i < this.state.strokes.length; i++) {
+            replayTimeouts.push(setTimeout(() => this.drawStroke(this.state.strokes[i]), 10 * i));
+        }
+    }
+
+    onSubmit() {
+
+    }
+
+    onDownload() {
+        const image = this.state.context.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        window.location.href = image;
     }
 
     render() {
@@ -124,7 +172,7 @@ export default class SketchPadRenderer extends Component {
                 <canvas ref={this.canvas} width="400" height="400">
                     Sorry, your browser does not support canvas.
                 </canvas>
-                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} />
+                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} onReplay={this.onReplay} onSubmit={this.onSubmit} onDownload={this.onDownload} />
             </div>
         )
     }
