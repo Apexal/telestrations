@@ -26,6 +26,8 @@ export default class SketchPadRenderer extends Component {
         this.onClear = this.onClear.bind(this);
         this.onUndo = this.onUndo.bind(this);
         this.onReplay = this.onReplay.bind(this);
+        this.onDownload = this.onDownload.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
 
         this.drawStroke = this.drawStroke.bind(this);
         
@@ -130,13 +132,22 @@ export default class SketchPadRenderer extends Component {
         }
     }
 
+    onSubmit() {
+
+    }
+
+    onDownload() {
+        const image = this.state.context.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        window.location.href = image;
+    }
+
     render() {
         return (
             <div>
                 <canvas ref={this.canvas} width="400" height="400">
                     Sorry, your browser does not support canvas.
                 </canvas>
-                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} onReplay={this.onReplay} />
+                <SketchControlBar onClear={this.onClear} onUndo={this.onUndo} onReplay={this.onReplay} onSubmit={this.onSubmit} onDownload={this.onDownload} />
             </div>
         )
     }
