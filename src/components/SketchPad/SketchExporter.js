@@ -2,7 +2,7 @@
     gif.js does not play nice with React, so the includes are included in the public/index.html file.
 */
 
-//import GIF from "../../gif";
+// import GIF from "../../gif";
 
 // function drawStroke(ctx, stroke, offset) {
 //     ctx.beginPath();
@@ -24,7 +24,7 @@
 //     //     width: 400,
 //     //     workerScript: process.env.PUBLIC_URL + '/gif.worker.js'
 //     // });
-    
+
 //     // const canvas = document.createElement("canvas");
 //     // canvas.width = 400;
 //     // canvas.height = 400;
@@ -32,25 +32,24 @@
 //     // const context = canvas.getContext("2d");
 //     // context.fillStyle = "white";
 //     // context.fillRect(0, 0, canvas.width, canvas.height);
-    
+
 //     // const offset = { x: canvas.offsetLeft, y: canvas.offsetTop };
 
 //     // for (let i = 0; i < strokes.length; i++) {
 //     //     drawStroke(context, strokes[i], offset);
-        
+
 //     //     if (i % 10 == 0)
 //     //         gif.addFrame(context, {copy: true, delay: 1});
 //     // }
-    
+
 //     // gif.addFrame(context, {copy: true, delay: 1});
-    
+
 //  //   gif.on('finished', function(blob) {
 //    //     window.open(URL.createObjectURL(blob));
 //    // });
-      
+
 //    // gif.render();
 
-   
 // }
 
 // export default exportAsGif;
