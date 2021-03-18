@@ -1,0 +1,83 @@
+:root {
+	--dark-color: red;
+}
+
+::placeholder {
+	color: #CCC;
+}
+
+
+#publicgameslist::-webkit-scrollbar {
+  	width: 0.7em;
+  	background: transparent;
+}
+
+#publicgameslist::-webkit-scrollbar-thumb {
+  	background: rgba(0,0,0,0.3);
+  	border-radius: 1em;
+}
+
+
+#publicgameslist::-webkit-scrollbar-track-piece {
+   display:none;
+}
+
+#title {
+	font-family: 'Luckiest Guy', cursive;
+	font-size: 5em;
+	text-shadow: 5px 5px 8px rgba(4,4,4,0.3);
+	color: var(--dark-color);
+	margin-bottom: 0em;
+}
+
+.button_container {
+	width: 200px;
+}
+
+.button {
+	font-family: 'Rubik', sans-serif;
+	margin-bottom: 1em;
+	padding: 1em;
+	border-radius: 1.5em;
+	background-color: var(--dark-color);
+	color: white;
+	border-width: 5px;
+	font-size: 1em;
+	width: 100%;
+}
+
+.invis {
+	display: none !important;
+}
+
+.button:focus {outline: 0;}
+
+#publicgameslist {
+	width: 500px;
+	display: flex;
+	flex-direction: column;
+	border: 3px var(--dark-color) solid;
+	border-radius: 1em;
+	align-items: center;
+	margin-bottom: 1em;
+	overflow-y: scroll;
+	height: 275px;
+}
+
+.publicgame {
+	display: flex;
+	justify-content: space-between;
+	width: 95%;
+	margin: 1em 0 1em 0;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+input {
+	box-sizing: border-box;
+}
