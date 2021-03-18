@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rubik&display=swap');
+
+.title {
+  margin-top: 8px;
+}
+
+.button {
+  background-color: whitesmoke;
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
+  color: black;
+  text-align: center;
+  font-size: 16px;
+}
+
+.button:hover {
+  background-color: lightgray;
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
+  color: black;
+  text-align: center;
+  font-size: 16px;
+}
+
+.button:active {
+  background-color: gray;
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
+  color: black;
+  text-align: center;
+  font-size: 16px;
+}
+
+.input-view[type="text"] {
+  background-color: white;
+  padding: 1%;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
+  
+  text-align: center;
+  font-size: 16px;
+}
+
+.panel {
+  background-color: white;
+  padding: 1%;
+  margin-bottom: 10px;
+
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
+  font-size: 16px;
+}
