@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { joinLobby } from '../services/client'
+import PublicGameListing from '../components/PublicGameListing'
+import { hostGame } from '../services/client'
 
 import '../styles/homepage.css'
 import HiddenPanel from './HiddenPanel'
@@ -13,21 +14,24 @@ export default class HomePage extends Component {
       showPrivateGame: false
     }
 
-    this.onShowPublicGames = this.onShowPublicGames.bind(this)
-    this.onShowPrivateGame = this.onShowPrivateGame.bind(this)
+    this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
+    this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
+    this.handleHostGame = this.handleHostGame.bind(this)
   }
 
-  onShowPublicGames () {
+  handleShowPublicGames () {
     this.setState({ showPublicGames: !this.state.showPublicGames })
-    console.log('clicked');
-    joinLobby()
-      .then(() => {
-        console.log('joined lobby');
-      })
   }
 
-  onShowPrivateGame () {
+  handleShowPrivateGame () {
     this.setState({ showPrivateGame: !this.state.showPrivateGame })
+  }
+
+  handleHostGame () {
+    hostGame()
+      .then(() => {
+        console.log('done')
+      })
   }
 
   render () {
@@ -36,36 +40,23 @@ export default class HomePage extends Component {
         <h1 className='title'>Telestrations</h1>
 
         <div className='row'>
-          <button className='button u-full-width'>
+          <button className='button u-full-width' onClick={this.handleHostGame}>
             Host Game
           </button>
-
         </div>
 
         <div className='row'>
-          <button className='button u-full-width' onClick={this.onShowPublicGames}>
+          <button className='button u-full-width' onClick={this.handleShowPublicGames}>
             Join Public Game
           </button>
 
           <HiddenPanel visible={this.state.showPublicGames}>
-            <div className='panel'>
-              <div className='row'>
-                <button className='button u-full-width'>
-                  Game 1 <span className='u-pull-right'>(2 / 5)</span>
-                </button>
-              </div>
-
-              <div className='row'>
-                <button className='button u-full-width'>
-                  Game 2 <span className='u-pull-right'>(2 / 5)</span>
-                </button>
-              </div>
-            </div>
+            <PublicGameListing />
           </HiddenPanel>
         </div>
 
         <div className='row'>
-          <button className='button u-full-width' onClick={this.onShowPrivateGame}>
+          <button className='button u-full-width' onClick={this.handleShowPrivateGame}>
             Join Private Game
           </button>
 
