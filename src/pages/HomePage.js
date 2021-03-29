@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { joinLobby } from '../services/client'
 
 import '../styles/homepage.css'
 import HiddenPanel from './HiddenPanel'
@@ -18,6 +19,11 @@ export default class HomePage extends Component {
 
   onShowPublicGames () {
     this.setState({ showPublicGames: !this.state.showPublicGames })
+    console.log('clicked');
+    joinLobby()
+      .then(() => {
+        console.log('joined lobby');
+      })
   }
 
   onShowPrivateGame () {

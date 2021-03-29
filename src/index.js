@@ -6,6 +6,8 @@ import './styles/skeleton.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 
+import './services/client'
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
