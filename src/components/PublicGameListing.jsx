@@ -33,35 +33,34 @@ export default class PublicGameListing extends Component {
     }
   }
 
-  componentDidMount () {
-    joinLobby()
-      .then(lobby => {
-        this.setState({ lobby })
+  async componentDidMount () {
+    const lobby = await joinLobby()
 
-        console.log(lobby)
+    this.setState({ lobby })
 
-        lobby.onMessage('rooms', rooms => {
-          this.setState({ rooms })
+    console.log(lobby)
 
-          console.log('Received lobby rooms: ', rooms)
-        })
+    lobby.onMessage('rooms', rooms => {
+      this.setState({ rooms })
 
-        lobby.onMessage('+', ([roomId, room]) => {
-          const roomIndex = this.state.rooms.findIndex((room) => room.roomId === roomId)
+      console.log('Received lobby rooms: ', rooms)
+    })
 
-          if (roomIndex !== -1) {
-            this.setState((state, props) => ({
-              rooms: state.rooms.map((r, index) => (roomIndex === index) ? { ...r, room } : r)
-            }))
-          } else {
-            this.setState((state, props) => ({
-              rooms: [room, ...state.rooms]
-            }))
-          }
+    lobby.onMessage('+', ([roomId, room]) => {
+      const roomIndex = this.state.rooms.findIndex((room) => room.roomId === roomId)
 
-          console.log('added/updated room', room)
-        })
-      })
+      if (roomIndex !== -1) {
+        this.setState((state, props) => ({
+          rooms: state.rooms.map((r, index) => (roomIndex === index) ? { ...r, room } : r)
+        }))
+      } else {
+        this.setState((state, props) => ({
+          rooms: [room, ...state.rooms]
+        }))
+      }
+
+      console.log('added/updated room', room)
+    })
   }
 
   componentWillUnmount () {
