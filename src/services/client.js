@@ -1,33 +1,21 @@
-import { Client } from "colyseus.js";
+import { Client } from 'colyseus.js'
 
-const client = new Client('ws://localhost:2567');
+const client = new Client('ws://localhost:2567')
 
 let lobby = null
-let allRooms = []
 
 export async function joinLobby () {
-  if (lobby !== null) return
+  if (lobby !== null) return lobby
 
-  lobby = await client.joinOrCreate("lobby")
-
-  lobby.onMessage("rooms", rooms => {
-    allRooms = rooms
-
-    console.log("Received lobby rooms: ", rooms);
-  })
-
-  lobby.onMessage("+", ([roomId, room]) => {
-    const roomIndex = allRooms.findIndex((room) => room.roomId === roomId);
-    if (roomIndex !== -1) {
-      allRooms[roomIndex] = room;
-    } else {
-      allRooms.push(room);
-    }
-  });
-  
-  lobby.onMessage("-", (roomId) => {
-    allRooms = allRooms.filter((room) => room.roomId !== roomId);
-  });
+  lobby = await client.joinOrCreate('lobby')
 
   return lobby
+}
+
+let room = null
+export async function hostGame () {
+  if (room !== null) return
+
+  room = await client.create('game_room')
+  console.log('successfully created and joined', room)
 }
