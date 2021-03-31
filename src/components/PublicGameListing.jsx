@@ -61,6 +61,12 @@ export default class PublicGameListing extends Component {
 
       console.log('added/updated room', room)
     })
+
+    lobby.onMessage('-', (roomId) => {
+      this.setState((state, props) => ({
+        rooms: state.rooms.filter(room => room.roomId !== roomId)
+      }))
+    })
   }
 
   componentWillUnmount () {
