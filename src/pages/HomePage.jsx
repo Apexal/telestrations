@@ -17,6 +17,9 @@ export default class HomePage extends Component {
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
+
+    let cc = this.getColorCombo()
+	  document.body.style.backgroundColor = this.getColor(cc)
   }
 
   handleShowPublicGames () {
@@ -32,6 +35,16 @@ export default class HomePage extends Component {
       .then(() => {
         console.log('done')
       })
+  }
+
+  getColorCombo() {
+    return [360 * Math.random(), 50 + 50 * Math.random(), 80 + 15 * Math.random()]
+  }
+
+  getColor(cc) { 
+    return "hsl(" + cc[0] + ',' +
+		cc[1] + '%,' + 
+		cc[2] + '%)'
   }
 
   render () {
