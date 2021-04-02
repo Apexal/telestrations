@@ -15,6 +15,10 @@ export default class HomePage extends Component {
 
     this.onShowPublicGames = this.onShowPublicGames.bind(this);
     this.onShowPrivateGame = this.onShowPrivateGame.bind(this);
+
+    let cc = this.getColorCombo();
+
+	  document.body.style.backgroundColor = this.getColor(cc);
   }
 
   onShowPublicGames() {
@@ -23,6 +27,16 @@ export default class HomePage extends Component {
 
   onShowPrivateGame() {
     this.setState({ showPrivateGame: !this.state.showPrivateGame });
+  }
+
+  getColorCombo() {
+    return [360 * Math.random(), 50 + 50 * Math.random(), 80 + 15 * Math.random()];
+  }
+
+  getColor(cc) { 
+    return "hsl(" + cc[0] + ',' +
+		cc[1] + '%,' + 
+		cc[2] + '%)';
   }
 
   render() {
