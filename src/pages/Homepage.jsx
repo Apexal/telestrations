@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import PublicGameListing from '../components/PublicGameListing'
 import { hostGame } from '../services/client'
 
 import '../styles/homepage.css'
-import HiddenPanel from './HiddenPanel'
+import HiddenPanel from '../components/HiddenPanel'
 
-export default class HomePage extends Component {
+export default class Homepage extends Component {
   constructor () {
     super()
 
