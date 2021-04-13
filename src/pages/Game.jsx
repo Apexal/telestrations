@@ -15,15 +15,50 @@ class Game extends Component {
       isJoiningGame: true,
       isInGame: false,
       isHost: false,
-      room: null,
-      errorMessage: null
+      errorMessage: null,
+      players: {}
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
+    this.setupGameRoomEventListeners = this.setupGameRoomEventListeners.bind(this)
+    this.handleChangeName = this.handleChangeName.bind(this)
   }
 
   getGameRoomId () {
     return this.props.match.params.roomCode
+  }
+
+  setupGameRoomEventListeners () {
+    const room = getGameRoom()
+
+    room.state.players.onAdd = (player, key) => {
+      console.log(player, 'has been added at', key)
+      this.setState((state) => ({
+        players: { ...state.players, [key]: player }
+      }))
+
+      player.onChange = (changes) => {
+        this.setState((state) => ({
+          players: { ...state.players, [key]: player }
+        }))
+      }
+    }
+
+    room.state.players.onRemove = (player, key) => {
+      console.log(player, 'has been removed at', key)
+      const newPlayers = Object.assign({}, this.state.players)
+      delete newPlayers[key]
+      this.setState({
+        players: newPlayers
+      })
+    }
+  }
+
+  handleChangeName () {
+    const newDisplayName = window.prompt('New name?')
+
+    const room = getGameRoom()
+    room.send('player_set_displayName', { displayName: newDisplayName })
   }
 
   async componentDidMount () {
@@ -43,7 +78,7 @@ class Game extends Component {
         isInGame: true,
         isHost: true,
         errorMessage: null
-      })
+      }, this.setupGameRoomEventListeners)
     } else {
       try {
         const room = await joinGameRoom(roomId)
@@ -53,7 +88,7 @@ class Game extends Component {
           isInGame: true,
           isHost: false,
           errorMessage: null
-        })
+        }, this.setupGameRoomEventListeners)
       } catch (e) {
         console.error(e)
         this.setState({
@@ -72,6 +107,9 @@ class Game extends Component {
   }
 
   render () {
+    const playerCount = Object.keys(this.state.players).length
+    const playerListItems = Object.keys(this.state.players)
+      .map(key => <li key={key}>{this.state.players[key].displayName}</li>)
     return (
       <div>
         {this.state.isJoiningGame && (
@@ -79,8 +117,16 @@ class Game extends Component {
             Joining game room...
           </div>
         )}
-        {this.state.room &&
-          <div>Joined game!</div>}
+        {this.state.isInGame &&
+          <div>
+            Joined game with {playerCount} players!
+
+            <ul>
+              {playerListItems}
+            </ul>
+
+            <button className='button' onClick={this.handleChangeName}>Change Name</button>
+          </div>}
         {this.state.errorMessage &&
           <div>{this.state.errorMessage}</div>}
       </div>
