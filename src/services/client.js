@@ -19,3 +19,13 @@ export async function hostGame () {
   room = await client.create('game_room')
   console.log('successfully created and joined', room)
 }
+
+let gameRoom = null
+export async function joinGame (roomId) {
+  gameRoom = await client.joinById(roomId)
+
+  // Save room id for reconnects
+  window.localStorage.setItem('lastRoomId', roomId)
+
+  return gameRoom
+}
