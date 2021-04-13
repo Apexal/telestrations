@@ -12,20 +12,26 @@ export async function joinLobby () {
   return lobby
 }
 
-let room = null
-export async function hostGame () {
-  if (room !== null) return
+let gameRoom = null
 
-  room = await client.create('game_room')
-  console.log('successfully created and joined', room)
+export async function hostGame () {
+  if (gameRoom !== null) return
+
+  gameRoom = await client.create('game_room')
+
+  return gameRoom
 }
 
-let gameRoom = null
-export async function joinGame (roomId) {
+export async function joinGameRoom (roomId) {
   gameRoom = await client.joinById(roomId)
 
   // Save room id for reconnects
   window.localStorage.setItem('lastRoomId', roomId)
 
+  return gameRoom
+}
+
+export function getGameRoom () {
+  if (gameRoom == null) throw Error('Game room is null!')
   return gameRoom
 }
