@@ -31,8 +31,8 @@ class Homepage extends Component {
 
   handleHostGame () {
     hostGame()
-      .then(() => {
-        console.log('done')
+      .then((room) => {
+        this.props.history.push('/' + room.id, { isHost: true })
       })
   }
 
