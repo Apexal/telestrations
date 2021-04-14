@@ -12,9 +12,10 @@ class Game extends Component {
     console.log(this.props)
 
     this.state = {
+      sessionId: '',
       isJoiningGame: true,
       isInGame: false,
-      isHost: false,
+      hostPlayerClientId: '',
       errorMessage: null,
       players: {}
     }
@@ -81,7 +82,7 @@ class Game extends Component {
     if (this.props.location.state && this.props.location.state.isHost) {
       const room = getGameRoom()
       this.setState({
-        room,
+        sessionId: room.sessionId,
         isJoiningGame: false,
         isInGame: true,
         isHost: true,
@@ -91,7 +92,7 @@ class Game extends Component {
       try {
         const room = await joinGameRoom(roomId)
         this.setState({
-          room,
+          sessionId: room.sessionId,
           isJoiningGame: false,
           isInGame: true,
           isHost: false,
@@ -100,7 +101,7 @@ class Game extends Component {
       } catch (e) {
         console.error(e)
         this.setState({
-          room: null,
+          sessionId: '',
           isJoiningGame: false,
           isInGame: false,
           errorMessage: 'Failed to find or join game room!'
@@ -115,6 +116,8 @@ class Game extends Component {
   }
 
   render () {
+    const isHost = this.state.hostPlayerClientId === this.state.sessionId
+
     const playerCount = Object.keys(this.state.players).length
     const playerListItems = Object.keys(this.state.players)
       .map(key => <li key={key}>{this.state.hostPlayerClientId === key ? '👑' : ''} {this.state.players[key].displayName}</li>)
@@ -133,6 +136,7 @@ class Game extends Component {
               {playerListItems}
             </ul>
 
+            {isHost && <button className='button' disabled={playerCount < 2}>Start Game</button>}
             <button className='button' onClick={this.handleChangeName}>Change Name</button>
           </div>}
         {this.state.errorMessage &&
