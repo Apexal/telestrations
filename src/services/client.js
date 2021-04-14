@@ -58,5 +58,6 @@ export async function joinGameRoom (roomId) {
  */
 export function getGameRoom () {
   if (gameRoom == null) throw Error('Game room is null!')
+  console.log(gameRoom)
   return gameRoom
 }
