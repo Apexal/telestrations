@@ -30,6 +30,14 @@ class Game extends Component {
 
   setupGameRoomEventListeners () {
     const room = getGameRoom()
+    console.log(room.state)
+    room.state.onChange = (changes) => {
+      changes.forEach(change => {
+        if (change.field === 'hostPlayerClientId') {
+          this.setState({ hostPlayerClientId: change.value })
+        }
+      })
+    }
 
     room.state.players.onAdd = (player, key) => {
       console.log(player, 'has been added at', key)
@@ -109,7 +117,7 @@ class Game extends Component {
   render () {
     const playerCount = Object.keys(this.state.players).length
     const playerListItems = Object.keys(this.state.players)
-      .map(key => <li key={key}>{this.state.players[key].displayName}</li>)
+      .map(key => <li key={key}>{this.state.hostPlayerClientId === key ? '👑' : ''} {this.state.players[key].displayName}</li>)
     return (
       <div>
         {this.state.isJoiningGame && (
