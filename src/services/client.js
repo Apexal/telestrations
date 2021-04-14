@@ -1,6 +1,6 @@
 import { Client, Room } from 'colyseus.js'
 
-const client = new Client('ws://72.224.10.47:2567')
+const client = new Client('ws://localhost:2567')
 
 let lobby = null
 
@@ -58,5 +58,6 @@ export async function joinGameRoom (roomId) {
  */
 export function getGameRoom () {
   if (gameRoom == null) throw Error('Game room is null!')
+  console.log(gameRoom)
   return gameRoom
 }
