@@ -31,10 +31,12 @@ export default class PublicGameListing extends Component {
       const roomIndex = this.state.rooms.findIndex((room) => room.roomId === roomId)
 
       if (roomIndex !== -1) {
+        // Update existing room
         this.setState((state, props) => ({
-          rooms: state.rooms.map((r, index) => (roomIndex === index) ? { ...r, room } : r)
+          rooms: state.rooms.map((r, index) => (roomIndex === index) ? room : r)
         }))
       } else {
+        // Add new room
         this.setState((state, props) => ({
           rooms: [room, ...state.rooms]
         }))
