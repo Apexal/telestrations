@@ -1,6 +1,6 @@
 import { Client, Room } from 'colyseus.js'
 
-const client = new Client('ws://localhost:2567')
+const client = new Client('ws://72.224.10.47:2567')
 
 let lobby = null
 
