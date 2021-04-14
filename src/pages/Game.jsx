@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
+import PlayerTag from '../components/PlayerTag'
 import { getGameRoom, joinGameRoom } from '../services/client'
 
 /**
@@ -13,6 +14,7 @@ class Game extends Component {
 
     this.state = {
       sessionId: '',
+      roomId: '',
       isJoiningGame: true,
       isInGame: false,
       hostPlayerClientId: '',
@@ -73,6 +75,8 @@ class Game extends Component {
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
+    this.setState({ roomId });
+
     // There are two possibilities at this point
     // 1. The player clicked host game and has already created and joined a game room
     //    - game room already is already joined
@@ -115,12 +119,17 @@ class Game extends Component {
     this.state.room.leave()
   }
 
+  renderPlayers() {
+    return Object.keys(this.state.players).map(key => (
+      <PlayerTag key={key} isHost={this.state.hostPlayerClientId === key} displayName={this.state.players[key].displayName}></PlayerTag>
+    ));
+  }
+
   render () {
     const isHost = this.state.hostPlayerClientId === this.state.sessionId
 
     const playerCount = Object.keys(this.state.players).length
-    const playerListItems = Object.keys(this.state.players)
-      .map(key => <li key={key}>{this.state.hostPlayerClientId === key ? '👑' : ''} {this.state.players[key].displayName}</li>)
+    const playerListItems = this.renderPlayers();
     return (
       <div>
         {this.state.isJoiningGame && (
@@ -130,8 +139,9 @@ class Game extends Component {
         )}
         {this.state.isInGame &&
           <div>
-            Joined game with {playerCount} players!
-
+            <h1>{this.state.roomId}</h1>
+            <h5>{playerCount} / 12 players</h5>
+  
             <ul>
               {playerListItems}
             </ul>

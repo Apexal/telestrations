@@ -1,0 +1,13 @@
+.player-tag {
+  padding-bottom: 8px;
+  padding-top: 8px;
+  
+  background-color: whitesmoke;
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
+  color: black;
+  text-align: center;
+  font-size: 16px;
+}
