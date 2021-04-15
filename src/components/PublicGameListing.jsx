@@ -67,9 +67,9 @@ export default class PublicGameListing extends Component {
 
     return this.state.rooms.map((room, roomIndex) => (
       <div className='row' key={room.roomId}>
-        <button className='button u-full-width'>
+        <Link to={'/' + room.roomId} className='button u-full-width'>
           Game {roomIndex + 1} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
-        </button>
+        </Link>
       </div>
     ))
   }
@@ -77,17 +77,7 @@ export default class PublicGameListing extends Component {
   render () {
     return (
       <div className='panel'>
-<<<<<<< HEAD
         { this.renderPublicGames() }
-=======
-        {this.state.rooms.map((room, roomIndex) => (
-          <div className='row' key={room.roomId}>
-            <Link to={'/' + room.roomId} className='button u-full-width'>
-              Game {roomIndex + 1} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
-            </Link>
-          </div>
-        ))}
->>>>>>> main
       </div>
     )
   }

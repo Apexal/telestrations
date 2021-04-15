@@ -114,7 +114,7 @@ class Game extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount () {    
     this.state.room.removeAllListeners()
     this.state.room.leave()
   }
@@ -139,7 +139,7 @@ class Game extends Component {
         )}
         {this.state.isInGame &&
           <div>
-            <h1>{this.state.roomId}</h1>
+            <h1 className='title'>{this.state.roomId}</h1>
             <h5>{playerCount} / 12 players</h5>
   
             <ul>
