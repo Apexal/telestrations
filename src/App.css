@@ -14,3 +14,9 @@ h1 {
   font-family: "Luckiest Guy", sans-serif;
   text-align: center;
 }
+
+button[disabled] {
+  background:#ccc;
+  border-color: #ccc;
+  text-shadow:none;
+}

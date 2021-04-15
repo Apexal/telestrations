@@ -31,6 +31,10 @@
                  0 18px 18px rgba(0,0,0,.15);
 }
 
+ul {
+  list-style-type: none;
+}
+
 .button {
   background-color: whitesmoke;
 
