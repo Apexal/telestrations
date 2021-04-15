@@ -8,7 +8,8 @@ import {
 
 import './App.css'
 import SketchPad from './components/SketchPad/SketchPad'
-import HomePage from './pages/HomePage'
+import Homepage from './pages/Homepage'
+import Game from './pages/Game'
 
 function App () {
   return (
@@ -16,11 +17,14 @@ function App () {
       <Router>
         <Switch>
           <Route path='/' exact>
-            <HomePage />
+            <Homepage />
           </Route>
           <Router path='/sketch'>
             <SketchPad secretWord='sandpaper' />
           </Router>
+          <Route path='/:roomCode'>
+            <Game />
+          </Route>
         </Switch>
       </Router>
     </div>

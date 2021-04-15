@@ -4,6 +4,10 @@
   margin-top: 8px;
 }
 
+ul {
+  list-style-type: none;
+}
+
 .button {
   background-color: whitesmoke;
 

@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import PublicGameListing from '../components/PublicGameListing'
 import { hostGame } from '../services/client'
+import { withRouter } from 'react-router'
 
 import '../styles/homepage.css'
-import HiddenPanel from './HiddenPanel'
+import HiddenPanel from '../components/HiddenPanel'
 
-export default class HomePage extends Component {
-  constructor () {
-    super()
+class Homepage extends Component {
+  constructor (props) {
+    super(props)
 
     this.state = {
       showPublicGames: false,
@@ -17,6 +18,7 @@ export default class HomePage extends Component {
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
+    this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
   }
 
   handleShowPublicGames () {
@@ -29,9 +31,19 @@ export default class HomePage extends Component {
 
   handleHostGame () {
     hostGame()
-      .then(() => {
-        console.log('done')
+      .then((room) => {
+        this.props.history.push('/' + room.id, { isHost: true })
       })
+  }
+
+  // Simply navigate to game code url
+  handleJoinPrivateGame (event) {
+    event.preventDefault()
+
+    const roomId = event.target.roomId.value
+    this.props.history.push('/' + roomId)
+
+    event.target.roomId.value = ''
   }
 
   render () {
@@ -61,10 +73,14 @@ export default class HomePage extends Component {
           </button>
 
           <HiddenPanel visible={this.state.showPrivateGame}>
-            <input className='u-full-width input-view' type='text' placeholder='Code...' />
+            <form onSubmit={this.handleJoinPrivateGame}>
+              <input className='u-full-width input-view' name='roomId' type='text' placeholder='Code...' />
+            </form>
           </HiddenPanel>
         </div>
       </div>
     )
   }
 }
+
+export default withRouter(Homepage)
