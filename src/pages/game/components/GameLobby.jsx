@@ -13,13 +13,12 @@ export default function GameLobby ({
 
   const playerCount = Object.keys(players).length
 
-  const playerTags = Object.keys(players).map((playerSessionId, index) => (
+  const playerTags = Object.keys(players).map((playerSessionId) => (
     <PlayerTag
       key={playerSessionId}
       isPlayer={playerSessionId === sessionId}
       isHost={hostPlayerClientId === playerSessionId}
       displayName={players[playerSessionId].displayName}
-      justAdded={Object.keys(players).length === (index + 1)}
     />
   ))
 
