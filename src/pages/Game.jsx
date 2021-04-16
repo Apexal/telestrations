@@ -63,6 +63,16 @@ class Game extends Component {
         players: newPlayers
       })
     }
+
+    room.onLeave((code) => {
+      window.alert('Lost connection to the game room...')
+      this.props.history.push('/')
+    })
+
+    room.onError((code, message) => {
+      console.log(code, message)
+      window.alert(code, message)
+    })
   }
 
   handleChangeName () {
