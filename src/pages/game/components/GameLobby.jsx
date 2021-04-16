@@ -1,6 +1,14 @@
 import PlayerTag from './PlayerTag'
 
-export default function GameLobby ({ roomId, sessionId, hostPlayerClientId, players, maxPlayers, onChangeName }) {
+export default function GameLobby ({
+  roomId,
+  sessionId,
+  hostPlayerClientId,
+  players,
+  maxPlayers,
+  onChangeName,
+  onStartGame
+}) {
   const isHost = hostPlayerClientId === sessionId
 
   const playerCount = Object.keys(players).length
@@ -11,7 +19,7 @@ export default function GameLobby ({ roomId, sessionId, hostPlayerClientId, play
 
   const hostButton = playerCount < 3
     ? <button className='button' disabled>Need More Players</button>
-    : <button className='button'>Start Game</button>
+    : <button className='button' onClick={onStartGame}>Start Game</button>
 
   const lobbyLink = window.location.protocol + '//' + window.location.host + window.location.pathname
 
