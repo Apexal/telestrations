@@ -42,7 +42,6 @@ export default class SketchPadRenderer extends Component {
     this.canvas.current.addEventListener('mousedown', this.onMouseClick)
     this.canvas.current.addEventListener('mouseup', this.onMouseReleased)
     this.canvas.current.addEventListener('mousemove', this.onMouseMove)
-    window.addEventListener('resize', this.onCanvasResized)
   }
 
   drawStroke (stroke) {
@@ -56,14 +55,19 @@ export default class SketchPadRenderer extends Component {
     ctx.lineCap = 'round'
     ctx.stroke()
     ctx.closePath()
-
-    this.setState({ context: ctx })
   }
 
   clear () {
     const ctx = this.state.context
     ctx.clearRect(0, 0, this.canvas.current.clientWidth, this.canvas.current.clientHeight)
-    this.setState({ context: ctx })
+  }
+
+  redraw () {
+    this.clear()
+
+    for (const stroke of this.state.strokes) {
+      this.drawStroke(stroke)
+    }
   }
 
   distance (posA, posB) {
@@ -127,11 +131,7 @@ export default class SketchPadRenderer extends Component {
   }
 
   onMouseReleased () {
-    this.clear()
-
-    for (const stroke of this.state.strokes) {
-      this.drawStroke(stroke)
-    }
+    this.redraw()
   }
 
   handleClear () {
@@ -140,13 +140,15 @@ export default class SketchPadRenderer extends Component {
   }
 
   handleUndo () {
-    if (this.state.strokes.length <= 0) { return }
+    if (this.state.strokes.length === 0) { return }
 
     const strokes = this.state.strokes
-    strokes.pop()
+    for (let i = 0; i < 5; i++) {
+      strokes.pop()
+    }
 
     this.optimizeStrokes(strokes)
-    this.setState({ strokes })
+    this.setState({ strokes }, this.redraw)
   }
 
   handleReplay () {
