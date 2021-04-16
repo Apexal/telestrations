@@ -13,8 +13,13 @@ export default function GameLobby ({
 
   const playerCount = Object.keys(players).length
 
-  const playerTags = Object.keys(players).map(key => (
-    <PlayerTag key={key} isHost={hostPlayerClientId === key} displayName={players[key].displayName} />
+  const playerTags = Object.keys(players).map(playerSessionId => (
+    <PlayerTag
+      key={playerSessionId}
+      isPlayer={playerSessionId === sessionId}
+      isHost={hostPlayerClientId === playerSessionId}
+      displayName={players[playerSessionId].displayName}
+    />
   ))
 
   const hostButton = playerCount < 3

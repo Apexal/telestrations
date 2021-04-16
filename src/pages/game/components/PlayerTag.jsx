@@ -5,14 +5,15 @@ import '../../../styles/player-tag.css'
   PlayerTag is the item that represents each player when they join a game. For instance, it will show their name
   and maybe a little information about them.
 */
-export default function PlayerTag ({ key, isHost, displayName }) {
+export default function PlayerTag ({ sessionId, isPlayer, isHost, displayName }) {
   return (
-    <div>
-      <li key={key}>
-        <div className='player-tag'>
+    <li key={sessionId}>
+      <div className='player-tag'>
+        <span>
           {isHost ? '👑' : ''} {displayName}
-        </div>
-      </li>
-    </div>
+        </span>
+        {isPlayer && <strong style={{marginLeft: 5}}>(You)</strong>}
+      </div>
+    </li>
   )
 }
