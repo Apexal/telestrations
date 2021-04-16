@@ -19,6 +19,7 @@ class Game extends Component {
       isInGame: false,
       hostPlayerClientId: '',
       errorMessage: null,
+      maxPlayers: 1,
       players: {}
     }
 
@@ -33,11 +34,12 @@ class Game extends Component {
 
   setupGameRoomEventListeners () {
     const room = getGameRoom()
-    console.log(room.state)
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (change.field === 'hostPlayerClientId') {
           this.setState({ hostPlayerClientId: change.value })
+        } else if (change.field === 'maxPlayers') {
+          this.setState({ maxPlayers: change.value })
         }
       })
     }
@@ -63,6 +65,16 @@ class Game extends Component {
         players: newPlayers
       })
     }
+
+    room.onLeave((code) => {
+      window.alert('Lost connection to the game room...')
+      this.props.history.push('/')
+    })
+
+    room.onError((code, message) => {
+      console.log(code, message)
+      window.alert(code, message)
+    })
   }
 
   handleChangeName () {
@@ -75,7 +87,7 @@ class Game extends Component {
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
-    this.setState({ roomId });
+    this.setState({ roomId })
 
     // There are two possibilities at this point
     // 1. The player clicked host game and has already created and joined a game room
@@ -114,22 +126,24 @@ class Game extends Component {
     }
   }
 
-  componentWillUnmount () {    
-    this.state.room.removeAllListeners()
-    this.state.room.leave()
+
+  componentWillUnmount () {
+    const room = getGameRoom()
+    room.removeAllListeners()
+    room.leave()
   }
 
-  renderPlayers() {
+  renderPlayers () {
     return Object.keys(this.state.players).map(key => (
-      <PlayerTag key={key} isHost={this.state.hostPlayerClientId === key} displayName={this.state.players[key].displayName}></PlayerTag>
-    ));
+      <PlayerTag key={key} isHost={this.state.hostPlayerClientId === key} displayName={this.state.players[key].displayName} />
+    ))
   }
 
   render () {
     const isHost = this.state.hostPlayerClientId === this.state.sessionId
 
     const playerCount = Object.keys(this.state.players).length
-    const playerListItems = this.renderPlayers();
+    const playerListItems = this.renderPlayers()
     return (
       <div>
         {this.state.isJoiningGame && (
@@ -140,8 +154,8 @@ class Game extends Component {
         {this.state.isInGame &&
           <div>
             <h1 className='title'>{this.state.roomId}</h1>
-            <h5>{playerCount} / 12 players</h5>
-  
+            <h5>{playerCount} / {this.state.maxPlayers} players</h5>
+
             <ul>
               {playerListItems}
             </ul>
