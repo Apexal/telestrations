@@ -173,7 +173,6 @@ class GamePage extends Component {
         )
       } else if (this.state.roundIndex > 0) {
         const player = this.getPlayer()
-        console.log(player)
         return (
           <SketchPad secretWord={player.secretWord} />
         )
