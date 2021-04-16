@@ -169,7 +169,13 @@ export default class SketchPadRenderer extends Component {
         <canvas ref={this.canvas} width='400' height='400'>
           Sorry, your browser does not support canvas.
         </canvas>
-        <SketchControlBar onClear={this.handleClear} onUndo={this.handleUndo} onReplay={this.handleReplay} onSubmit={this.handleSubmit} onDownload={this.handleDownload} />
+        <SketchControlBar
+          onClear={this.handleClear}
+          onUndo={this.handleUndo}
+          onReplay={this.handleReplay}
+          onSubmit={this.handleSubmit}
+          onDownload={this.handleDownload} 
+        />
       </div>
     )
   }

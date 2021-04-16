@@ -1,13 +1,11 @@
-import React from 'react'
-
-export default function SketchControlBar (props) {
+export default function SketchControlBar ({ onClear, onUndo, onSubmit }) {
   return (
     <div>
-      <button onClick={props.onClear} id='clear'>Clear</button>
-      <button id='undo' onClick={props.onUndo}>Undo</button>
-      <button id='submit' onClick={props.onSubmit}>Submit</button>
-      <button id='replay' onClick={props.onReplay}>Replay</button>
-      <button id='download' onClick={props.onDownload}>Download</button>
+      <button onClick={onClear} id='clear'>Clear</button>
+      <button id='undo' onClick={onUndo}>Undo</button>
+      <button id='submit' onClick={onSubmit}>Submit</button>
+      {/* <button id='replay' onClick={props.onReplay}>Replay</button>
+      <button id='download' onClick={props.onDownload}>Download</button> */}
     </div>
   )
 }
