@@ -63,3 +63,31 @@
             transform: scale(1) rotateZ(0deg);
   }
 }
+
+.player-tag-add-anim {
+	-webkit-animation: player-tag-add-anim 0.1s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
+	        animation: player-tag-add-anim 0.1s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
+}
+
+@-webkit-keyframes player-tag-add-anim {
+  0% {
+    -webkit-transform: scale(0.0);
+            transform: scale(0.0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes player-tag-add-anim {
+  0% {
+    -webkit-transform: scale(0.0);
+            transform: scale(0.0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+

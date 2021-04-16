@@ -50,7 +50,7 @@ class HomePage extends Component {
   render () {
     return (
       <div>
-        <h1 className='title'>Telestrations</h1>
+        <h1 className='title title-anim'>Telestrations</h1>
 
         <div className='row'>
           <button className='button u-full-width' onClick={this.handleHostGame}>
