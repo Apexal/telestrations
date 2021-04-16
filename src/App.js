@@ -9,8 +9,11 @@ import {
 import './App.css'
 import HomePage from './pages/home/HomePage'
 import GamePage from './pages/game/GamePage'
+import configureBackgroundColors from "./services/color-effects";
 
 function App () {
+  configureBackgroundColors()
+
   return (
     <div className='App container'>
       <Router>
@@ -26,7 +29,5 @@ function App () {
     </div>
   )
 }
-
-// <SketchPad secretWord='sandpaper' />
 
 export default App

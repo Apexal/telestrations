@@ -1,7 +1,12 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import { getGameRoom, joinGameRoom } from '../../services/client'
+import { Link } from 'react-router-dom'
 import GameLobby from './components/GameLobby'
+import SketchPad from './components/SketchPad/SketchPad'
+
+import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
+
+import '../../styles/game.css'
 
 /**
  * Wrapper component class for entire game. This allows us
@@ -9,8 +14,6 @@ import GameLobby from './components/GameLobby'
 class GamePage extends Component {
   constructor (props) {
     super(props)
-
-    console.log(this.props)
 
     this.state = {
       sessionId: '',
@@ -20,16 +23,22 @@ class GamePage extends Component {
       hostPlayerClientId: '',
       errorMessage: null,
       maxPlayers: 1,
-      players: {}
+      players: {},
+      roundIndex: 0
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
     this.setupGameRoomEventListeners = this.setupGameRoomEventListeners.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
+    this.handleStartGame = this.handleStartGame.bind(this)
   }
 
   getGameRoomId () {
     return this.props.match.params.roomCode
+  }
+
+  getPlayer () {
+    return this.state.players[this.state.sessionId]
   }
 
   setupGameRoomEventListeners () {
@@ -40,6 +49,8 @@ class GamePage extends Component {
           this.setState({ hostPlayerClientId: change.value })
         } else if (change.field === 'maxPlayers') {
           this.setState({ maxPlayers: change.value })
+        } else if (change.field === 'roundIndex') {
+          this.setState({ roundIndex: change.value })
         }
       })
     }
@@ -68,6 +79,7 @@ class GamePage extends Component {
 
     room.onLeave((code) => {
       window.alert('Lost connection to the game room...')
+      leaveGameRoom()
       this.props.history.push('/')
     })
 
@@ -84,6 +96,11 @@ class GamePage extends Component {
     room.send('player_set_displayName', { displayName: newDisplayName })
   }
 
+  handleStartGame () {
+    const room = getGameRoom()
+    room.send('start_game')
+  }
+
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
@@ -97,13 +114,23 @@ class GamePage extends Component {
 
     if (this.props.location.state && this.props.location.state.isHost) {
       const room = getGameRoom()
-      this.setState({
-        sessionId: room.sessionId,
-        isJoiningGame: false,
-        isInGame: true,
-        isHost: true,
-        errorMessage: null
-      }, this.setupGameRoomEventListeners)
+      if (room === null) {
+        // Refreshed page! game is dead
+        this.setState({
+          sessionId: '',
+          isJoiningGame: false,
+          isInGame: false,
+          errorMessage: 'Failed to find or join game room!'
+        })
+      } else {
+        this.setState({
+          sessionId: room.sessionId,
+          isJoiningGame: false,
+          isInGame: true,
+          isHost: true,
+          errorMessage: null
+        }, this.setupGameRoomEventListeners)
+      }
     } else {
       try {
         const room = await joinGameRoom(roomId)
@@ -127,20 +154,13 @@ class GamePage extends Component {
   }
 
   componentWillUnmount () {
-    const room = getGameRoom()
-    room.removeAllListeners()
-    room.leave()
+    leaveGameRoom()
   }
 
-  render () {
-    return (
-      <div>
-        {this.state.isJoiningGame && (
-          <div>
-            Joining game room...
-          </div>
-        )}
-        {this.state.isInGame &&
+  renderGameComponent () {
+    if (this.state.isInGame) {
+      if (this.state.roundIndex === 0) {
+        return (
           <GameLobby
             roomId={this.state.roomId}
             sessionId={this.state.sessionId}
@@ -148,9 +168,35 @@ class GamePage extends Component {
             players={this.state.players}
             maxPlayers={this.state.maxPlayers}
             onChangeName={this.handleChangeName}
-          />}
+            onStartGame={this.handleStartGame}
+          />
+        )
+      } else if (this.state.roundIndex > 0) {
+        const player = this.getPlayer()
+        return (
+          <SketchPad secretWord={player.secretWord} />
+        )
+      }
+    }
+  }
+
+  render () {
+    const gameComponent = this.renderGameComponent()
+
+    return (
+      <div>
+        {this.state.isJoiningGame && (
+          <div>
+            Joining game room...
+          </div>
+        )}
+        {this.state.isInGame && gameComponent}
         {this.state.errorMessage &&
-          <div>{this.state.errorMessage}</div>}
+          <div>
+            <h1>An Error Occurred</h1>
+            <p>{this.state.errorMessage}</p>
+            <Link className='button' to='/'>Home</Link>
+          </div>}
       </div>
     )
   }

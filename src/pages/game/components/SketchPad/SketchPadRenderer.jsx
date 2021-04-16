@@ -10,12 +10,11 @@ export default class SketchPadRenderer extends Component {
     super(props)
 
     this.state = {
-      currentPosition: { x: -1, y: -1 },
+      currentX: -1,
+      currentY: -1,
       width: 2,
       color: 'black',
       strokes: [],
-      offset: { x: 0, y: 0 },
-
       context: null
     }
 
@@ -33,40 +32,42 @@ export default class SketchPadRenderer extends Component {
     this.onMouseMove = this.onMouseMove.bind(this)
     this.onMouseClick = this.onMouseClick.bind(this)
     this.onMouseReleased = this.onMouseReleased.bind(this)
-    this.onCanvasResized = this.onCanvasResized.bind(this)
   }
 
   componentDidMount () {
     this.setState({
-      offset: { x: this.canvas.current.offsetLeft || 0, y: this.canvas.current.offsetTop || 0 },
       context: this.canvas.current.getContext('2d')
     })
 
-    window.addEventListener('mousedown', this.onMouseClick)
-    window.addEventListener('mouseup', this.onMouseReleased)
-    window.addEventListener('mousemove', this.onMouseMove)
-    window.addEventListener('resize', this.onCanvasResized)
+    this.canvas.current.addEventListener('mousedown', this.onMouseClick)
+    this.canvas.current.addEventListener('mouseup', this.onMouseReleased)
+    this.canvas.current.addEventListener('mousemove', this.onMouseMove)
   }
 
   drawStroke (stroke) {
     const ctx = this.state.context
 
     ctx.beginPath()
-    ctx.moveTo(stroke.from.x - this.state.offset.x, stroke.from.y - this.state.offset.y)
-    ctx.lineTo(stroke.to.x - this.state.offset.x, stroke.to.y - this.state.offset.y)
+    ctx.moveTo(stroke.from.x, stroke.from.y)
+    ctx.lineTo(stroke.to.x, stroke.to.y)
     ctx.lineWidth = stroke.options.width
     ctx.strokeStyle = stroke.options.color
     ctx.lineCap = 'round'
     ctx.stroke()
     ctx.closePath()
-
-    this.setState({ context: ctx })
   }
 
   clear () {
     const ctx = this.state.context
     ctx.clearRect(0, 0, this.canvas.current.clientWidth, this.canvas.current.clientHeight)
-    this.setState({ context: ctx })
+  }
+
+  redraw () {
+    this.clear()
+
+    for (const stroke of this.state.strokes) {
+      this.drawStroke(stroke)
+    }
   }
 
   distance (posA, posB) {
@@ -90,21 +91,35 @@ export default class SketchPadRenderer extends Component {
     }
   }
 
+  getMousePos (event) {
+    const rect = this.canvas.current.getBoundingClientRect()
+    return {
+      x: (event.clientX - rect.left) / (rect.right - rect.left) * this.canvas.current.width,
+      y: (event.clientY - rect.top) / (rect.bottom - rect.top) * this.canvas.current.height
+    }
+  }
+
   setCurrentPosition (x, y) {
-    this.setState({ currentPosition: { x, y } })
+    this.setState({ currentX: x, currentY: y })
   }
 
-  onMouseClick ({ clientX, clientY }) {
-    this.setCurrentPosition(clientX, clientY)
+  onMouseClick (event) {
+    const pos = this.getMousePos(event)
+    this.setCurrentPosition(pos.x, pos.y)
   }
 
-  onMouseMove ({ buttons, clientX, clientY }) {
-    if (buttons !== 1) return
+  onMouseMove (event) {
+    if (event.buttons !== 1) return
+
+    const to = this.getMousePos(event)
 
     const stroke = {
-      from: { ...this.state.currentPosition },
-      to: { x: clientX, y: clientY },
-      options: { width: this.state.width, color: this.state.color }
+      from: { x: this.state.currentX, y: this.state.currentY },
+      to,
+      options: {
+        width: this.state.width,
+        color: this.state.color
+      }
     }
 
     const strokes = this.state.strokes.concat(stroke)
@@ -112,22 +127,11 @@ export default class SketchPadRenderer extends Component {
     this.setState({ strokes })
 
     this.drawStroke(stroke)
-    this.setCurrentPosition(clientX, clientY)
+    this.setCurrentPosition(to.x, to.y)
   }
 
   onMouseReleased () {
-    this.clear()
-
-    for (const stroke of this.state.strokes) {
-      this.drawStroke(stroke)
-    }
-  }
-
-  onCanvasResized () {
-    const dx = this.canvas.current.offsetLeft
-    const dy = this.canvas.current.offsetTop
-
-    this.setState({ offset: { x: dx, y: dy } })
+    this.redraw()
   }
 
   handleClear () {
@@ -136,13 +140,15 @@ export default class SketchPadRenderer extends Component {
   }
 
   handleUndo () {
-    if (this.state.strokes.length <= 0) { return }
+    if (this.state.strokes.length === 0) { return }
 
     const strokes = this.state.strokes
-    strokes.pop()
+    for (let i = 0; i < 5; i++) {
+      strokes.pop()
+    }
 
     this.optimizeStrokes(strokes)
-    this.setState({ strokes })
+    this.setState({ strokes }, this.redraw)
   }
 
   handleReplay () {
@@ -166,10 +172,16 @@ export default class SketchPadRenderer extends Component {
   render () {
     return (
       <div>
-        <canvas ref={this.canvas} width='400' height='400'>
+        <canvas id='canvas' ref={this.canvas} width='400' height='400'>
           Sorry, your browser does not support canvas.
         </canvas>
-        <SketchControlBar onClear={this.handleClear} onUndo={this.handleUndo} onReplay={this.handleReplay} onSubmit={this.handleSubmit} onDownload={this.handleDownload} />
+        <SketchControlBar
+          onClear={this.handleClear}
+          onUndo={this.handleUndo}
+          onReplay={this.handleReplay}
+          onSubmit={this.handleSubmit}
+          onDownload={this.handleDownload}
+        />
       </div>
     )
   }

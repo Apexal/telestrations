@@ -1,7 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rubik&display=swap');
 
-.title {
+body {
   margin-top: 8px;
+}
+
+.title {
 
   font-family: 'Luckiest Guy';
   color: #fff;
@@ -86,4 +89,55 @@ ul {
   border-radius: 10px;
   box-shadow: 3px 3px 5px -4px rgba(0,0,0,0.63);
   font-size: 16px;
+}
+
+.title-anim {
+	-webkit-animation: title-anim 5s ease-in-out infinite both;
+	        animation: title-anim 5s ease-in-out infinite both;
+}
+
+@-webkit-keyframes title-anim {
+  0% {
+    -webkit-transform: scale(1) rotateZ(0);
+            transform: scale(1) rotateZ(0);
+  }
+  25% {
+    -webkit-transform: scale(1.05) rotateZ(2deg);
+            transform: scale(1.05) rotateZ(2deg);
+  }
+  50% {
+    -webkit-transform: scale(1) rotateZ(0deg);
+            transform: scale(1) rotateZ(0deg);
+  }
+  75% {
+    -webkit-transform: scale(1.05) rotateZ(-2deg);
+            transform: scale(1.05) rotateZ(-2deg);
+  }
+  100% {
+    -webkit-transform: scale(1) rotateZ(0deg);
+            transform: scale(1) rotateZ(0deg);
+  }
+}
+
+@keyframes title-anim {
+  0% {
+    -webkit-transform: scale(1) rotateZ(0);
+            transform: scale(1) rotateZ(0);
+  }
+  25% {
+    -webkit-transform: scale(1.05) rotateZ(2deg);
+            transform: scale(1.05) rotateZ(2deg);
+  }
+  50% {
+    -webkit-transform: scale(1) rotateZ(0deg);
+            transform: scale(1) rotateZ(0deg);
+  }
+  75% {
+    -webkit-transform: scale(1.05) rotateZ(-2deg);
+            transform: scale(1.05) rotateZ(-2deg);
+  }
+  100% {
+    -webkit-transform: scale(1) rotateZ(0deg);
+            transform: scale(1) rotateZ(0deg);
+  }
 }

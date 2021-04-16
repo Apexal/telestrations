@@ -1,24 +1,36 @@
 import PlayerTag from './PlayerTag'
 
-export default function GameLobby ({ roomId, sessionId, hostPlayerClientId, players, maxPlayers, onChangeName }) {
+export default function GameLobby ({
+  roomId,
+  sessionId,
+  hostPlayerClientId,
+  players,
+  maxPlayers,
+  onChangeName,
+  onStartGame
+}) {
   const isHost = hostPlayerClientId === sessionId
 
   const playerCount = Object.keys(players).length
 
-  const playerTags = Object.keys(players).map(key => (
-    <PlayerTag key={key} isHost={hostPlayerClientId === key} displayName={players[key].displayName} />
+  const playerTags = Object.keys(players).map((playerSessionId) => (
+    <PlayerTag
+      key={playerSessionId}
+      isPlayer={playerSessionId === sessionId}
+      isHost={hostPlayerClientId === playerSessionId}
+      displayName={players[playerSessionId].displayName}
+    />
   ))
 
   const hostButton = playerCount < 3
     ? <button className='button' disabled>Need More Players</button>
-    : <button className='button'>Start Game</button>
-
-  const lobbyLink = window.location.protocol + '//' + window.location.host + window.location.pathname
+    : <button className='button' onClick={onStartGame}>Start Game</button>
 
   return (
     <div className='game-lobby'>
-      <h5 className='center'>Join at <a href={lobbyLink}>{lobbyLink}</a></h5>
-      <h1 className='title'>Code: {roomId}</h1>
+      <div className="supertext center">your room code is...</div>
+      <h1 className='title room-code-anim'>{roomId}</h1>
+
       <h5>{playerCount} / {maxPlayers} players</h5>
 
       <ul>
@@ -26,7 +38,8 @@ export default function GameLobby ({ roomId, sessionId, hostPlayerClientId, play
       </ul>
 
       {isHost && hostButton}
-      <button className='button' onClick={onChangeName}>Change Name</button>
+      {players[sessionId] &&
+        <button className='button u-pull-right' onClick={onChangeName}>Change Name</button>}
     </div>
   )
 }

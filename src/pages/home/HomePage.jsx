@@ -19,9 +19,6 @@ class HomePage extends Component {
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
 
-    const cc = this.getColorCombo()
-    document.body.style.backgroundColor = this.getColor(cc)
-
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
   }
 
@@ -40,18 +37,6 @@ class HomePage extends Component {
       })
   }
 
-  /* Generate color as array */
-  getColorCombo () {
-    return [360 * Math.random(), 50 + 50 * Math.random(), 80 + 15 * Math.random()]
-  }
-
-  /* Generate CSS color based off of array */
-  getColor (cc) {
-    return 'hsl(' + cc[0] + ',' +
-    cc[1] + '%,' +
-    cc[2] + '%)'
-  }
-
   // Simply navigate to game code url
   handleJoinPrivateGame (event) {
     event.preventDefault()
@@ -65,7 +50,7 @@ class HomePage extends Component {
   render () {
     return (
       <div>
-        <h1 className='title'>Telestrations</h1>
+        <h1 className='title title-anim'>Telestrations</h1>
 
         <div className='row'>
           <button className='button u-full-width' onClick={this.handleHostGame}>

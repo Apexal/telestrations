@@ -10,7 +10,7 @@ export default class SketchPad extends Component {
     const { secretWord } = this.props
 
     return (
-      <div>
+      <div className='center'>
         <h4>Your secret word is...</h4>
         <h1>{secretWord}</h1>
         <SketchPadRenderer />
