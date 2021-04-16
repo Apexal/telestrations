@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import PlayerTag from './components/PlayerTag'
 import { getGameRoom, joinGameRoom } from '../../services/client'
+import GameLobby from './components/GameLobby'
 
 /**
  * Wrapper component class for entire game. This allows us
@@ -132,17 +132,7 @@ class GamePage extends Component {
     room.leave()
   }
 
-  renderPlayers () {
-    return Object.keys(this.state.players).map(key => (
-      <PlayerTag key={key} isHost={this.state.hostPlayerClientId === key} displayName={this.state.players[key].displayName} />
-    ))
-  }
-
   render () {
-    const isHost = this.state.hostPlayerClientId === this.state.sessionId
-
-    const playerCount = Object.keys(this.state.players).length
-    const playerListItems = this.renderPlayers()
     return (
       <div>
         {this.state.isJoiningGame && (
@@ -151,17 +141,14 @@ class GamePage extends Component {
           </div>
         )}
         {this.state.isInGame &&
-          <div>
-            <h1 className='title'>{this.state.roomId}</h1>
-            <h5>{playerCount} / {this.state.maxPlayers} players</h5>
-
-            <ul>
-              {playerListItems}
-            </ul>
-
-            {isHost && <button className='button' disabled={playerCount < 2}>Start Game</button>}
-            <button className='button' onClick={this.handleChangeName}>Change Name</button>
-          </div>}
+          <GameLobby
+            roomId={this.state.roomId}
+            sessionId={this.state.sessionId}
+            hostPlayerClientId={this.state.hostPlayerClientId}
+            players={this.state.players}
+            maxPlayers={this.state.maxPlayers}
+            onChangeName={this.handleChangeName}
+          />}
         {this.state.errorMessage &&
           <div>{this.state.errorMessage}</div>}
       </div>
