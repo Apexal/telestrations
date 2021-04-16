@@ -40,7 +40,8 @@ export default function GameLobby ({
       </ul>
 
       {isHost && hostButton}
-      <button className='button' onClick={onChangeName}>Change Name ({players[sessionId].displayName})</button>
+      {players[sessionId] &&
+        <button className='button u-pull-right' onClick={onChangeName}>Change Name</button>}
     </div>
   )
 }
