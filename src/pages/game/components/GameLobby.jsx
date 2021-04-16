@@ -9,16 +9,20 @@ export default function GameLobby ({ roomId, sessionId, hostPlayerClientId, play
     <PlayerTag key={key} isHost={hostPlayerClientId === key} displayName={players[key].displayName} />
   ))
 
+  const hostButton = playerCount < 3
+    ? <button className='button' disabled>Need More Players</button>
+    : <button className='button'>Start Game</button>
+
   return (
     <div className='game-lobby'>
-      <h1 className='title'>{roomId}</h1>
+      <h1 className='title'>Code: {roomId}</h1>
       <h5>{playerCount} / {maxPlayers} players</h5>
 
       <ul>
         {playerTags}
       </ul>
 
-      {isHost && <button className='button' disabled={playerCount < 2}>Start Game</button>}
+      {isHost && hostButton}
       <button className='button' onClick={onChangeName}>Change Name</button>
     </div>
   )
