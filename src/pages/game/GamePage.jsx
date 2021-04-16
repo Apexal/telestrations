@@ -1,8 +1,10 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
+import { Link } from 'react-router-dom'
 import GameLobby from './components/GameLobby'
 import SketchPad from './components/SketchPad/SketchPad'
+
+import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
 import '../../styles/game.css'
 
@@ -152,9 +154,7 @@ class GamePage extends Component {
   }
 
   componentWillUnmount () {
-    const room = getGameRoom()
-    room.removeAllListeners()
-    room.leave()
+    leaveGameRoom()
   }
 
   renderGameComponent () {
@@ -193,7 +193,11 @@ class GamePage extends Component {
         )}
         {this.state.isInGame && gameComponent}
         {this.state.errorMessage &&
-          <div>{this.state.errorMessage}</div>}
+          <div>
+            <h1>An Error Occurred</h1>
+            <p>{this.state.errorMessage}</p>
+            <Link className='button' to='/'>Home</Link>
+          </div>}
       </div>
     )
   }
