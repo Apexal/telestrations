@@ -2,6 +2,7 @@ import { Component } from 'react'
 import { withRouter } from 'react-router'
 import { getGameRoom, joinGameRoom } from '../../services/client'
 import GameLobby from './components/GameLobby'
+import SketchPad from './components/SketchPad/SketchPad'
 
 /**
  * Wrapper component class for entire game. This allows us
@@ -20,12 +21,14 @@ class GamePage extends Component {
       hostPlayerClientId: '',
       errorMessage: null,
       maxPlayers: 1,
-      players: {}
+      players: {},
+      roundIndex: 0
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
     this.setupGameRoomEventListeners = this.setupGameRoomEventListeners.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
+    this.handleStartGame = this.handleStartGame.bind(this)
   }
 
   getGameRoomId () {
@@ -40,6 +43,8 @@ class GamePage extends Component {
           this.setState({ hostPlayerClientId: change.value })
         } else if (change.field === 'maxPlayers') {
           this.setState({ maxPlayers: change.value })
+        } else if (change.field === 'roundIndex') {
+          this.setState({ roundIndex: change.value })
         }
       })
     }
@@ -82,6 +87,11 @@ class GamePage extends Component {
 
     const room = getGameRoom()
     room.send('player_set_displayName', { displayName: newDisplayName })
+  }
+
+  handleStartGame () {
+    const room = getGameRoom()
+    room.send('start_game')
   }
 
   async componentDidMount () {
@@ -132,15 +142,10 @@ class GamePage extends Component {
     room.leave()
   }
 
-  render () {
-    return (
-      <div>
-        {this.state.isJoiningGame && (
-          <div>
-            Joining game room...
-          </div>
-        )}
-        {this.state.isInGame &&
+  renderGameComponent () {
+    if (this.state.isInGame) {
+      if (this.state.roundIndex === 0) {
+        return (
           <GameLobby
             roomId={this.state.roomId}
             sessionId={this.state.sessionId}
@@ -148,7 +153,28 @@ class GamePage extends Component {
             players={this.state.players}
             maxPlayers={this.state.maxPlayers}
             onChangeName={this.handleChangeName}
-          />}
+            onStartGame={this.handleStartGame}
+          />
+        )
+      } else if (this.state.roundIndex > 0) {
+        return (
+          <SketchPad />
+        )
+      }
+    }
+  }
+
+  render () {
+    const gameComponent = this.renderGameComponent()
+
+    return (
+      <div>
+        {this.state.isJoiningGame && (
+          <div>
+            Joining game room...
+          </div>
+        )}
+        {this.state.isInGame && gameComponent}
         {this.state.errorMessage &&
           <div>{this.state.errorMessage}</div>}
       </div>
