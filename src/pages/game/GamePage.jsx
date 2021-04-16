@@ -1,12 +1,12 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import PlayerTag from '../components/PlayerTag'
-import { getGameRoom, joinGameRoom } from '../services/client'
+import PlayerTag from './components/PlayerTag'
+import { getGameRoom, joinGameRoom } from '../../services/client'
 
 /**
  * Wrapper component class for entire game. This allows us
  */
-class Game extends Component {
+class GamePage extends Component {
   constructor (props) {
     super(props)
 
@@ -126,7 +126,6 @@ class Game extends Component {
     }
   }
 
-
   componentWillUnmount () {
     const room = getGameRoom()
     room.removeAllListeners()
@@ -170,4 +169,4 @@ class Game extends Component {
   }
 }
 
-export default withRouter(Game)
+export default withRouter(GamePage)

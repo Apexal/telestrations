@@ -7,9 +7,8 @@ import {
 } from 'react-router-dom'
 
 import './App.css'
-import SketchPad from './components/SketchPad/SketchPad'
-import Homepage from './pages/Homepage'
-import Game from './pages/Game'
+import HomePage from './pages/home/HomePage'
+import GamePage from './pages/game/GamePage'
 
 function App () {
   return (
@@ -17,13 +16,10 @@ function App () {
       <Router>
         <Switch>
           <Route path='/' exact>
-            <Homepage />
+            <HomePage />
           </Route>
-          <Router path='/sketch'>
-            <SketchPad secretWord='sandpaper' />
-          </Router>
           <Route path='/:roomCode'>
-            <Game />
+            <GamePage />
           </Route>
         </Switch>
       </Router>

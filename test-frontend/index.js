@@ -3,9 +3,9 @@ const colorCombo = () => {
 }
 
 const getColor = (cc) => {
-  	return 'hsl(' + cc[0] + ',' +
-		cc[1] + '%,' +
-		cc[2] + '%)'
+  return 'hsl(' + cc[0] + ',' +
+  cc[1] + '%,' +
+  cc[2] + '%)'
 }
 
 const setEventListeners = () => {

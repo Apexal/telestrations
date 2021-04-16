@@ -1,12 +1,12 @@
 import { Component } from 'react'
-import PublicGameListing from '../components/PublicGameListing'
-import { hostGame } from '../services/client'
+import { hostGame } from '../../services/client'
 import { withRouter } from 'react-router'
 
-import '../styles/homepage.css'
-import HiddenPanel from '../components/HiddenPanel'
+import '../../styles/homepage.css'
+import HiddenPanel from '../../components/HiddenPanel'
+import PublicGameListing from './components/PublicGameListing'
 
-class Homepage extends Component {
+class HomePage extends Component {
   constructor (props) {
     super(props)
 
@@ -19,9 +19,9 @@ class Homepage extends Component {
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
 
-    let cc = this.getColorCombo()
-	  document.body.style.backgroundColor = this.getColor(cc)
-    
+    const cc = this.getColorCombo()
+    document.body.style.backgroundColor = this.getColor(cc)
+
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
   }
 
@@ -41,15 +41,15 @@ class Homepage extends Component {
   }
 
   /* Generate color as array */
-  getColorCombo() {
+  getColorCombo () {
     return [360 * Math.random(), 50 + 50 * Math.random(), 80 + 15 * Math.random()]
   }
 
   /* Generate CSS color based off of array */
-  getColor(cc) { 
-    return "hsl(" + cc[0] + ',' +
-		cc[1] + '%,' + 
-		cc[2] + '%)'
+  getColor (cc) {
+    return 'hsl(' + cc[0] + ',' +
+    cc[1] + '%,' +
+    cc[2] + '%)'
   }
 
   // Simply navigate to game code url
@@ -99,4 +99,4 @@ class Homepage extends Component {
   }
 }
 
-export default withRouter(Homepage)
+export default withRouter(HomePage)
