@@ -13,8 +13,11 @@ export default function GameLobby ({ roomId, sessionId, hostPlayerClientId, play
     ? <button className='button' disabled>Need More Players</button>
     : <button className='button'>Start Game</button>
 
+  const lobbyLink = window.location.protocol + "//" + window.location.host + window.location.pathname;
+
   return (
     <div className='game-lobby'>
+      <h5 className='center'>Join at <a href={lobbyLink}>{lobbyLink}</a></h5>
       <h1 className='title'>Code: {roomId}</h1>
       <h5>{playerCount} / {maxPlayers} players</h5>
 
