@@ -18,6 +18,10 @@ class Homepage extends Component {
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
+
+    let cc = this.getColorCombo()
+	  document.body.style.backgroundColor = this.getColor(cc)
+    
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
   }
 
@@ -34,6 +38,18 @@ class Homepage extends Component {
       .then((room) => {
         this.props.history.push('/' + room.id, { isHost: true })
       })
+  }
+
+  /* Generate color as array */
+  getColorCombo() {
+    return [360 * Math.random(), 50 + 50 * Math.random(), 80 + 15 * Math.random()]
+  }
+
+  /* Generate CSS color based off of array */
+  getColor(cc) { 
+    return "hsl(" + cc[0] + ',' +
+		cc[1] + '%,' + 
+		cc[2] + '%)'
   }
 
   // Simply navigate to game code url

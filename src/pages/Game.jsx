@@ -34,7 +34,6 @@ class Game extends Component {
 
   setupGameRoomEventListeners () {
     const room = getGameRoom()
-    console.log(room.state)
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (change.field === 'hostPlayerClientId') {
@@ -127,6 +126,7 @@ class Game extends Component {
     }
   }
 
+
   componentWillUnmount () {
     const room = getGameRoom()
     room.removeAllListeners()
@@ -153,7 +153,7 @@ class Game extends Component {
         )}
         {this.state.isInGame &&
           <div>
-            <h1>{this.state.roomId}</h1>
+            <h1 className='title'>{this.state.roomId}</h1>
             <h5>{playerCount} / {this.state.maxPlayers} players</h5>
 
             <ul>

@@ -54,19 +54,30 @@ export default class PublicGameListing extends Component {
   }
 
   componentWillUnmount () {
-    this.state.lobby.removeAllListeners()
+    // the lobby doesn't exist, so don't try removing the event listeners
+    if(!this.state.lobby) 
+      return
+    
+      this.state.lobby.removeAllListeners()
+  }
+
+  renderPublicGames() {
+    if(this.state.rooms.length <= 0)
+      return <i>There are no active public rooms!</i>
+
+    return this.state.rooms.map((room, roomIndex) => (
+      <div className='row' key={room.roomId}>
+        <Link to={'/' + room.roomId} className='button u-full-width'>
+          Game {roomIndex + 1} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
+        </Link>
+      </div>
+    ))
   }
 
   render () {
     return (
       <div className='panel'>
-        {this.state.rooms.map((room, roomIndex) => (
-          <div className='row' key={room.roomId}>
-            <Link to={'/' + room.roomId} className='button u-full-width'>
-              Game {roomIndex + 1} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
-            </Link>
-          </div>
-        ))}
+        { this.renderPublicGames() }
       </div>
     )
   }
