@@ -27,6 +27,4 @@ function App () {
   )
 }
 
-// <SketchPad secretWord='sandpaper' />
-
 export default App

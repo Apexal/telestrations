@@ -13,8 +13,6 @@ class GamePage extends Component {
   constructor (props) {
     super(props)
 
-    console.log(this.props)
-
     this.state = {
       sessionId: '',
       roomId: '',
@@ -35,6 +33,10 @@ class GamePage extends Component {
 
   getGameRoomId () {
     return this.props.match.params.roomCode
+  }
+
+  getPlayer () {
+    return this.state.players[this.state.sessionId]
   }
 
   setupGameRoomEventListeners () {
@@ -170,8 +172,10 @@ class GamePage extends Component {
           />
         )
       } else if (this.state.roundIndex > 0) {
+        const player = this.getPlayer()
+        console.log(player)
         return (
-          <SketchPad />
+          <SketchPad secretWord={player.secretWord} />
         )
       }
     }
