@@ -60,7 +60,9 @@ export function getGameRoom () {
 }
 
 export function leaveGameRoom () {
-  if (gameRoom !== null) throw Error('Game room is not null!')
+  if (gameRoom === null) return
+
+  gameRoom.removeAllListeners()
   gameRoom.leave()
   gameRoom = null
 }
