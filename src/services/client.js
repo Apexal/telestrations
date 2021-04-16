@@ -51,13 +51,16 @@ export async function joinGameRoom (roomId) {
 }
 
 /**
- * Return the currently connected game room or throw an error if null.
+ * Return the currently connected game room or null if not connected.
  *
  * @returns {Room} Currently connected game room
- * @throws Error if game room is null
  */
 export function getGameRoom () {
-  if (gameRoom == null) throw Error('Game room is null!')
-  console.log(gameRoom)
   return gameRoom
+}
+
+export function leaveGameRoom () {
+  if (gameRoom !== null) throw Error('Game room is not null!')
+  gameRoom.leave()
+  gameRoom = null
 }

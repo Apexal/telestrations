@@ -1,8 +1,10 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import { getGameRoom, joinGameRoom } from '../../services/client'
+import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 import GameLobby from './components/GameLobby'
 import SketchPad from './components/SketchPad/SketchPad'
+
+import '../../styles/game.css'
 
 /**
  * Wrapper component class for entire game. This allows us
@@ -73,6 +75,7 @@ class GamePage extends Component {
 
     room.onLeave((code) => {
       window.alert('Lost connection to the game room...')
+      leaveGameRoom()
       this.props.history.push('/')
     })
 
@@ -107,13 +110,23 @@ class GamePage extends Component {
 
     if (this.props.location.state && this.props.location.state.isHost) {
       const room = getGameRoom()
-      this.setState({
-        sessionId: room.sessionId,
-        isJoiningGame: false,
-        isInGame: true,
-        isHost: true,
-        errorMessage: null
-      }, this.setupGameRoomEventListeners)
+      if (room === null) {
+        // Refreshed page! game is dead
+        this.setState({
+          sessionId: '',
+          isJoiningGame: false,
+          isInGame: false,
+          errorMessage: 'Failed to find or join game room!'
+        })
+      } else {
+        this.setState({
+          sessionId: room.sessionId,
+          isJoiningGame: false,
+          isInGame: true,
+          isHost: true,
+          errorMessage: null
+        }, this.setupGameRoomEventListeners)
+      }
     } else {
       try {
         const room = await joinGameRoom(roomId)
