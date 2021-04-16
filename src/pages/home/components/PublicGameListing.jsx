@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { joinLobby } from '../services/client'
+import { joinLobby } from '../../../services/client'
 import { Link } from 'react-router-dom'
 
 export default class PublicGameListing extends Component {
@@ -55,15 +55,13 @@ export default class PublicGameListing extends Component {
 
   componentWillUnmount () {
     // the lobby doesn't exist, so don't try removing the event listeners
-    if(!this.state.lobby) 
-      return
-    
-      this.state.lobby.removeAllListeners()
+    if (!this.state.lobby) { return }
+
+    this.state.lobby.removeAllListeners()
   }
 
-  renderPublicGames() {
-    if(this.state.rooms.length <= 0)
-      return <i>There are no active public rooms!</i>
+  renderPublicGames () {
+    if (this.state.rooms.length <= 0) { return <i>There are no active public rooms!</i> }
 
     return this.state.rooms.map((room, roomIndex) => (
       <div className='row' key={room.roomId}>
@@ -77,7 +75,7 @@ export default class PublicGameListing extends Component {
   render () {
     return (
       <div className='panel'>
-        { this.renderPublicGames() }
+        {this.renderPublicGames()}
       </div>
     )
   }
