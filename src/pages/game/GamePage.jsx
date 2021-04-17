@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
 import GameLobby from './components/GameLobby'
-import SketchPad from './components/SketchPad/SketchPad'
+import GameRound from './components/GameRound'
 
 import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
@@ -24,7 +24,9 @@ class GamePage extends Component {
       errorMessage: null,
       maxPlayers: 1,
       players: {},
-      roundIndex: 0
+      roundIndex: 0,
+      guessingSecondsRemaining: 0,
+      drawingSecondsRemaining: 0
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -51,6 +53,10 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
+        } else if (change.field === 'drawingSecondsRemaining') {
+          this.setState({ drawingSecondsRemaining: change.value })
+        } else if (change.field === 'guessingSecondsRemaining') {
+          this.setState({ guessingSecondsRemaining: change.value })
         }
       })
     }
@@ -172,10 +178,21 @@ class GamePage extends Component {
           />
         )
       } else if (this.state.roundIndex > 0) {
-        const player = this.getPlayer()
         return (
-          <SketchPad secretWord={player.secretWord} />
+          <GameRound
+            secretWord={this.state.players[this.state.sessionId].secretWord}
+            {...this.state}
+          />
         )
+        // if (player) {
+        //   return (
+        //     <SketchPad secretWord={player.secretWord} />
+        //   )
+        // } else {
+        //   return (
+        //     <p>Loading...</p>
+        //   )
+        // }
       }
     }
   }

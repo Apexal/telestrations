@@ -1,3 +1,4 @@
+import config from '../../../config'
 import PlayerTag from './PlayerTag'
 
 export default function GameLobby ({
@@ -22,13 +23,13 @@ export default function GameLobby ({
     />
   ))
 
-  const hostButton = playerCount < 3
+  const hostButton = playerCount < config.minPlayers
     ? <button className='button' disabled>Need More Players</button>
     : <button className='button' onClick={onStartGame}>Start Game</button>
 
   return (
     <div className='game-lobby'>
-      <div className="supertext center">your room code is...</div>
+      <div className='supertext center'>your room code is...</div>
       <h1 className='title room-code-anim'>{roomId}</h1>
 
       <h5>{playerCount} / {maxPlayers} players</h5>
