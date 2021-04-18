@@ -28,7 +28,7 @@ export default function GameLobby ({
 
   return (
     <div className='game-lobby'>
-      <div className="supertext center">your room code is...</div>
+      <div className='supertext center'>your room code is...</div>
       <h1 className='title room-code-anim'>{roomId}</h1>
 
       <h5>{playerCount} / {maxPlayers} players</h5>
