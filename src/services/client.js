@@ -1,4 +1,4 @@
-import { Client, Room } from 'colyseus.js'
+import { Client } from 'colyseus.js'
 
 const client = new Client('ws://localhost:2567')
 
