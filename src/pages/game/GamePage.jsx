@@ -204,15 +204,6 @@ class GamePage extends Component {
             {...this.state}
           />
         )
-        // if (player) {
-        //   return (
-        //     <SketchPad secretWord={player.secretWord} />
-        //   )
-        // } else {
-        //   return (
-        //     <p>Loading...</p>
-        //   )
-        // }
       }
     }
   }
