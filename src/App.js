@@ -9,7 +9,7 @@ import {
 import './App.css'
 import HomePage from './pages/home/HomePage'
 import GamePage from './pages/game/GamePage'
-import configureBackgroundColors from "./services/color-effects";
+import configureBackgroundColors from './services/color-effects'
 
 function App () {
   configureBackgroundColors()
