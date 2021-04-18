@@ -36,6 +36,7 @@ class GamePage extends Component {
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleStartGame = this.handleStartGame.bind(this)
     this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   getGameRoomId () {
@@ -115,7 +116,12 @@ class GamePage extends Component {
   }
 
   handleSubmit () {
-    console.log('submitted')
+    const room = getGameRoom()
+    room.send('player_submit_submission', {
+      roundIndex: this.state.roundIndex,
+      previousDrawingGuess: this.state.previousDrawingGuess,
+      drawingStrokes: this.state.drawingStrokes
+    })
   }
 
   async componentDidMount () {
