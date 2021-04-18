@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
 import GameLobby from './components/GameLobby'
-import SketchPad from './components/SketchPad/SketchPad'
+import GameRound from './components/GameRound'
 
 import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
@@ -24,13 +24,19 @@ class GamePage extends Component {
       errorMessage: null,
       maxPlayers: 1,
       players: {},
-      roundIndex: 0
+      roundIndex: 0,
+      guessingSecondsRemaining: 0,
+      drawingSecondsRemaining: 0,
+      previousDrawingGuess: '',
+      drawingStrokes: []
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
     this.setupGameRoomEventListeners = this.setupGameRoomEventListeners.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleStartGame = this.handleStartGame.bind(this)
+    this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   getGameRoomId () {
@@ -51,6 +57,10 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
+        } else if (change.field === 'drawingSecondsRemaining') {
+          this.setState({ drawingSecondsRemaining: change.value })
+        } else if (change.field === 'guessingSecondsRemaining') {
+          this.setState({ guessingSecondsRemaining: change.value })
         }
       })
     }
@@ -99,6 +109,19 @@ class GamePage extends Component {
   handleStartGame () {
     const room = getGameRoom()
     room.send('start_game')
+  }
+
+  handleDrawingStrokesUpdate (drawingStrokes, callback) {
+    this.setState({ drawingStrokes }, callback)
+  }
+
+  handleSubmit () {
+    const room = getGameRoom()
+    room.send('player_submit_submission', {
+      roundIndex: this.state.roundIndex,
+      previousDrawingGuess: this.state.previousDrawingGuess,
+      drawingStrokes: this.state.drawingStrokes
+    })
   }
 
   async componentDidMount () {
@@ -167,14 +190,19 @@ class GamePage extends Component {
             hostPlayerClientId={this.state.hostPlayerClientId}
             players={this.state.players}
             maxPlayers={this.state.maxPlayers}
+            onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             onChangeName={this.handleChangeName}
             onStartGame={this.handleStartGame}
           />
         )
       } else if (this.state.roundIndex > 0) {
-        const player = this.getPlayer()
         return (
-          <SketchPad secretWord={player.secretWord} />
+          <GameRound
+            secretWord={this.state.players[this.state.sessionId].secretWord}
+            onSubmit={this.handleSubmit}
+            onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
+            {...this.state}
+          />
         )
       }
     }
