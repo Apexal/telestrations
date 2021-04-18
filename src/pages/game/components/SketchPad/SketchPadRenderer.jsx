@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component, createRef } from 'react'
 import SketchControlBar from './SketchControlBar'
 
 /**
@@ -12,23 +12,21 @@ export default class SketchPadRenderer extends Component {
     this.state = {
       currentX: -1,
       currentY: -1,
-      width: 2,
+      width: 5,
       color: 'black',
       strokes: [],
       context: null
     }
 
-    this.canvas = React.createRef()
+    this.canvasRef = createRef()
 
     this.clear = this.clear.bind(this)
+    this.redraw = this.redraw.bind(this)
     this.handleClear = this.handleClear.bind(this)
     this.handleUndo = this.handleUndo.bind(this)
     this.handleReplay = this.handleReplay.bind(this)
-    this.handleDownload = this.handleDownload.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-
+    this.onDownload = this.onDownload.bind(this)
     this.drawStroke = this.drawStroke.bind(this)
-
     this.onMouseMove = this.onMouseMove.bind(this)
     this.onMouseClick = this.onMouseClick.bind(this)
     this.onMouseReleased = this.onMouseReleased.bind(this)
@@ -36,12 +34,12 @@ export default class SketchPadRenderer extends Component {
 
   componentDidMount () {
     this.setState({
-      context: this.canvas.current.getContext('2d')
+      context: this.canvasRef.current.getContext('2d')
     })
 
-    this.canvas.current.addEventListener('mousedown', this.onMouseClick)
-    this.canvas.current.addEventListener('mouseup', this.onMouseReleased)
-    this.canvas.current.addEventListener('mousemove', this.onMouseMove)
+    this.canvasRef.current.addEventListener('mousedown', this.onMouseClick)
+    this.canvasRef.current.addEventListener('mouseup', this.onMouseReleased)
+    this.canvasRef.current.addEventListener('mousemove', this.onMouseMove)
   }
 
   drawStroke (stroke) {
@@ -59,13 +57,13 @@ export default class SketchPadRenderer extends Component {
 
   clear () {
     const ctx = this.state.context
-    ctx.clearRect(0, 0, this.canvas.current.clientWidth, this.canvas.current.clientHeight)
+    ctx.clearRect(0, 0, this.canvasRef.current.clientWidth, this.canvasRef.current.clientHeight)
   }
 
   redraw () {
     this.clear()
 
-    for (const stroke of this.state.strokes) {
+    for (const stroke of this.props.drawingStrokes) {
       this.drawStroke(stroke)
     }
   }
@@ -92,10 +90,10 @@ export default class SketchPadRenderer extends Component {
   }
 
   getMousePos (event) {
-    const rect = this.canvas.current.getBoundingClientRect()
+    const rect = this.canvasRef.current.getBoundingClientRect()
     return {
-      x: (event.clientX - rect.left) / (rect.right - rect.left) * this.canvas.current.width,
-      y: (event.clientY - rect.top) / (rect.bottom - rect.top) * this.canvas.current.height
+      x: (event.clientX - rect.left) / (rect.right - rect.left) * this.canvasRef.current.width,
+      y: (event.clientY - rect.top) / (rect.bottom - rect.top) * this.canvasRef.current.height
     }
   }
 
@@ -122,9 +120,9 @@ export default class SketchPadRenderer extends Component {
       }
     }
 
-    const strokes = this.state.strokes.concat(stroke)
+    const strokes = this.props.drawingStrokes.concat(stroke)
     this.optimizeStrokes(strokes)
-    this.setState({ strokes })
+    this.props.onDrawingStrokesUpdate(strokes)
 
     this.drawStroke(stroke)
     this.setCurrentPosition(to.x, to.y)
@@ -136,35 +134,31 @@ export default class SketchPadRenderer extends Component {
 
   handleClear () {
     this.clear()
-    this.setState({ strokes: [] })
+    this.props.onDrawingStrokesUpdate([])
   }
 
   handleUndo () {
-    if (this.state.strokes.length === 0) { return }
+    if (this.props.drawingStrokes.length === 0) { return }
 
-    const strokes = this.state.strokes
+    const strokes = this.props.drawingStrokes
     for (let i = 0; i < 5; i++) {
       strokes.pop()
     }
 
     this.optimizeStrokes(strokes)
-    this.setState({ strokes }, this.redraw)
+    this.props.onDrawingStrokesUpdate(strokes, this.redraw)
   }
 
   handleReplay () {
     this.clear()
     const replayTimeouts = []
 
-    for (let i = 0; i < this.state.strokes.length; i++) {
-      replayTimeouts.push(setTimeout(() => this.drawStroke(this.state.strokes[i]), 10 * i))
+    for (let i = 0; i < this.props.drawingStrokes.length; i++) {
+      replayTimeouts.push(setTimeout(() => this.drawStroke(this.props.drawingStrokes[i]), 10 * i))
     }
   }
 
-  handleSubmit () {
-
-  }
-
-  handleDownload () {
+  onDownload () {
     const image = this.state.context.canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream')
     window.location.href = image
   }
@@ -172,15 +166,15 @@ export default class SketchPadRenderer extends Component {
   render () {
     return (
       <div>
-        <canvas id='canvas' ref={this.canvas} width='400' height='400'>
+        <canvas id='canvas' ref={this.canvasRef} width='400' height='400'>
           Sorry, your browser does not support canvas.
         </canvas>
         <SketchControlBar
           onClear={this.handleClear}
           onUndo={this.handleUndo}
-          onReplay={this.handleReplay}
-          onSubmit={this.handleSubmit}
-          onDownload={this.handleDownload}
+          onSubmit={() => this.props.handleSubmit()}
+          // onReplay={this.handleReplay}
+          // onDownload={this.onDownload}
         />
       </div>
     )

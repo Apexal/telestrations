@@ -26,13 +26,16 @@ class GamePage extends Component {
       players: {},
       roundIndex: 0,
       guessingSecondsRemaining: 0,
-      drawingSecondsRemaining: 0
+      drawingSecondsRemaining: 0,
+      previousDrawingGuess: '',
+      drawingStrokes: []
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
     this.setupGameRoomEventListeners = this.setupGameRoomEventListeners.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleStartGame = this.handleStartGame.bind(this)
+    this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
   }
 
   getGameRoomId () {
@@ -107,6 +110,10 @@ class GamePage extends Component {
     room.send('start_game')
   }
 
+  handleDrawingStrokesUpdate (drawingStrokes, callback) {
+    this.setState({ drawingStrokes }, callback)
+  }
+
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
@@ -173,6 +180,7 @@ class GamePage extends Component {
             hostPlayerClientId={this.state.hostPlayerClientId}
             players={this.state.players}
             maxPlayers={this.state.maxPlayers}
+            onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             onChangeName={this.handleChangeName}
             onStartGame={this.handleStartGame}
           />
@@ -181,6 +189,8 @@ class GamePage extends Component {
         return (
           <GameRound
             secretWord={this.state.players[this.state.sessionId].secretWord}
+            handleSubmit={this.onSubmit}
+            onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             {...this.state}
           />
         )
