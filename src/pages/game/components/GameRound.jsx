@@ -4,7 +4,11 @@ import SketchPadRenderer from './SketchPad/SketchPadRenderer'
 export default class GameRound extends Component {
   render () {
     const sketchPad = (
-      <SketchPadRenderer drawingStrokes={this.props.drawingStrokes} onDrawingStrokesUpdate={this.props.onDrawingStrokesUpdate} />
+      <SketchPadRenderer
+        drawingStrokes={this.props.drawingStrokes}
+        onDrawingStrokesUpdate={this.props.onDrawingStrokesUpdate}
+        onSubmit={this.props.onSubmit}
+      />
     )
 
     if (this.props.roundIndex === 1) {

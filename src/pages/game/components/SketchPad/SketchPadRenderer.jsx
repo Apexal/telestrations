@@ -172,7 +172,7 @@ export default class SketchPadRenderer extends Component {
         <SketchControlBar
           onClear={this.handleClear}
           onUndo={this.handleUndo}
-          onSubmit={() => this.props.handleSubmit()}
+          onSubmit={this.props.onSubmit}
           // onReplay={this.handleReplay}
           // onDownload={this.onDownload}
         />
