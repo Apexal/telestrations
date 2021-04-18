@@ -114,6 +114,10 @@ class GamePage extends Component {
     this.setState({ drawingStrokes }, callback)
   }
 
+  handleSubmit() {
+    console.log("submitted")
+  }
+
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
@@ -189,7 +193,7 @@ class GamePage extends Component {
         return (
           <GameRound
             secretWord={this.state.players[this.state.sessionId].secretWord}
-            handleSubmit={this.onSubmit}
+            handleSubmit={this.handleSubmit}
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             {...this.state}
           />
