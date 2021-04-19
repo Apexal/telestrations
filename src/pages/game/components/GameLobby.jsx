@@ -1,3 +1,4 @@
+import config from '../../../config'
 import PlayerTag from './PlayerTag'
 
 export default function GameLobby ({
@@ -22,7 +23,7 @@ export default function GameLobby ({
     />
   ))
 
-  const hostButton = playerCount < 3
+  const hostButton = playerCount < config.minPlayers
     ? <button className='button' disabled>Need More Players</button>
     : <button className='button' onClick={onStartGame}>Start Game</button>
 
