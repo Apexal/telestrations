@@ -57,11 +57,15 @@ export default class GameRound extends Component {
           <h1>Guess - Round {this.props.roundIndex}</h1>
           <p>{this.props.roundTimerSecondsRemaining}s remaining</p>
           <div>
-            <b>{previousPlayer.displayName} just drew this! Guess what it is below.</b>
+            <b>{previousPlayer.displayName} just drew this... masterpiece.</b>
+            <br />
             <CanvasDisplay drawingStrokes={previousDrawingStrokes} />
           </div>
           <form onSubmit={this.handlePreviousDrawingGuessFormSubmit}>
-            <input type='text' placeholder='What is this a drawing of?' name='guess' required />
+            <span>Guess what it is below!</span>
+            <div>
+              <input className='center' type='text' placeholder='What is this a drawing of?' name='guess' required />
+            </div>
           </form>
         </div>
       )
