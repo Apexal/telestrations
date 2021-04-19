@@ -18,6 +18,8 @@ export default class CanvasDisplay extends Component {
   }
 
   drawStroke (stroke) {
+    if (!stroke) return
+
     const ctx = this.state.context
 
     ctx.beginPath()
@@ -31,8 +33,10 @@ export default class CanvasDisplay extends Component {
   }
 
   draw () {
-    for (const stroke of this.props.drawingStrokes) {
-      this.drawStroke(stroke)
+    const ctx = this.state.context
+    ctx.clearRect(0, 0, this.canvasRef.current.clientWidth, this.canvasRef.current.clientHeight)
+    for (let i = 0; i < this.props.drawingStrokes.length; i++) {
+      window.setTimeout(() => (() => this.drawStroke(this.props.drawingStrokes[i]))(), 10 * i)
     }
   }
 
@@ -40,6 +44,12 @@ export default class CanvasDisplay extends Component {
     this.setState({
       context: this.canvasRef.current.getContext('2d')
     }, this.draw)
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.drawingStrokes.length !== this.props.drawingStrokes.length) {
+      this.draw()
+    }
   }
 
   render () {
