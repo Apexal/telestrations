@@ -46,10 +46,10 @@ export default class SketchPadRenderer extends Component {
     const ctx = this.state.context
 
     ctx.beginPath()
-    ctx.moveTo(stroke.from.x, stroke.from.y)
-    ctx.lineTo(stroke.to.x, stroke.to.y)
-    ctx.lineWidth = stroke.options.width
-    ctx.strokeStyle = stroke.options.color
+    ctx.moveTo(stroke.fromX, stroke.fromY)
+    ctx.lineTo(stroke.toX, stroke.toY)
+    ctx.lineWidth = stroke.width
+    ctx.strokeStyle = stroke.color
     ctx.lineCap = 'round'
     ctx.stroke()
     ctx.closePath()
@@ -68,8 +68,8 @@ export default class SketchPadRenderer extends Component {
     }
   }
 
-  distance (posA, posB) {
-    return Math.sqrt(Math.pow(posA.x - posB.x, 2) + Math.pow(posA.y - posB.y, 2))
+  distance (posAX, posAY, posBX, posBY) {
+    return Math.sqrt(Math.pow(posAX - posBX, 2) + Math.pow(posAY - posBY, 2))
   }
 
   samePos (posA, posB) {
@@ -82,9 +82,10 @@ export default class SketchPadRenderer extends Component {
       const prevStroke = anyStrokes[i - 1]
       const prevPrevStroke = anyStrokes[i - 2]
 
-      if (this.distance(prevStroke.from, stroke.from) <= 2 && this.samePos(prevPrevStroke.to, prevStroke.from)) {
+      if (this.distance(prevStroke.fromX, prevStroke.fromY, stroke.fromX, stroke.fromY) <= 2 && this.samePos(prevPrevStroke.toX, prevPrevStroke.toY, prevStroke.fromX, prevStroke.fromY)) {
         anyStrokes.splice(i - 1, 1)
-        prevPrevStroke.to = stroke.from
+        prevPrevStroke.toX = stroke.fromX
+        prevPrevStroke.toY = stroke.fromY
       }
     }
   }
@@ -112,12 +113,12 @@ export default class SketchPadRenderer extends Component {
     const to = this.getMousePos(event)
 
     const stroke = {
-      from: { x: this.state.currentX, y: this.state.currentY },
-      to,
-      options: {
-        width: this.state.width,
-        color: this.state.color
-      }
+      fromX: this.state.currentX,
+      fromY: this.state.currentY,
+      toX: to.x,
+      toY: to.y,
+      width: this.state.width,
+      color: this.state.color
     }
 
     const strokes = this.props.drawingStrokes.concat(stroke)
