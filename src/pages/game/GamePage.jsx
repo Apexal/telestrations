@@ -24,6 +24,7 @@ class GamePage extends Component {
       errorMessage: null,
       maxPlayers: 1,
       players: {},
+      playerKeys: [],
       roundIndex: 0,
       roundTimerSecondsRemaining: 0,
       previousDrawingGuess: '',
@@ -78,7 +79,8 @@ class GamePage extends Component {
     room.state.players.onAdd = (player, key) => {
       console.log(player, 'has been added at', key)
       this.setState((state) => ({
-        players: { ...state.players, [key]: player }
+        players: { ...state.players, [key]: player },
+        playerKeys: [...state.playerKeys, key]
       }))
 
       player.onChange = (changes) => {
@@ -93,7 +95,8 @@ class GamePage extends Component {
       const newPlayers = Object.assign({}, this.state.players)
       delete newPlayers[key]
       this.setState({
-        players: newPlayers
+        players: newPlayers,
+        playerKeys: this.state.playerKeys.filter(k => k !== key)
       })
     }
 
