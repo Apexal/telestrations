@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "standard && react-scripts test",
     "fix": "standard --fix",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -39,6 +40,7 @@
     ]
   },
   "devDependencies": {
+    "husky": "^6.0.0",
     "standard": "^16.0.3"
   }
 }
