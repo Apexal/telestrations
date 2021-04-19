@@ -13,6 +13,11 @@
   font-size: larger;
 }
 
+.button-bar {
+  margin-right: 1%;
+  margin-left: 1%;
+}
+
 .room-code-anim {
 	-webkit-animation: room-code-anim 5s ease-in-out infinite both;
 	        animation: room-code-anim 5s ease-in-out infinite both;
