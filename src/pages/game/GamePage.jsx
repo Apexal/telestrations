@@ -27,7 +27,8 @@ class GamePage extends Component {
       roundIndex: 0,
       roundTimerSecondsRemaining: 0,
       previousDrawingGuess: '',
-      drawingStrokes: []
+      drawingStrokes: [],
+      isDrawingStage: false
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -35,6 +36,7 @@ class GamePage extends Component {
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleStartGame = this.handleStartGame.bind(this)
     this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
+    this.handlePreviousDrawingGuessUpdate = this.handlePreviousDrawingGuessUpdate.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
@@ -50,6 +52,14 @@ class GamePage extends Component {
     const room = getGameRoom()
 
     room.onMessage('send-submissions', this.handleSubmit)
+
+    room.onMessage('round-end', () => {
+      this.setState({
+        drawingStrokes: [],
+        previousDrawingGuess: '',
+        isDrawingStage: false
+      })
+    })
 
     room.state.onChange = (changes) => {
       changes.forEach(change => {
@@ -113,6 +123,13 @@ class GamePage extends Component {
 
   handleDrawingStrokesUpdate (drawingStrokes, callback) {
     this.setState({ drawingStrokes }, callback)
+  }
+
+  handlePreviousDrawingGuessUpdate (newPreviousDrawingGuess) {
+    this.setState({
+      previousDrawingGuess: newPreviousDrawingGuess,
+      isDrawingStage: true
+    })
   }
 
   handleSubmit () {
@@ -201,6 +218,7 @@ class GamePage extends Component {
             secretWord={this.state.players[this.state.sessionId].secretWord}
             onSubmit={this.handleSubmit}
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
+            onPreviousDrawingGuessUpdate={this.handlePreviousDrawingGuessUpdate}
             {...this.state}
           />
         )
