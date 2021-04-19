@@ -25,3 +25,4 @@ Refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
 Deployment is extremely simple as this frontend application can be served as a static website on any number of platforms. Simply build the frontend and host the `build/` directory on a web server.
 - `npm install` - Installs all required dependencies.
 - `npm run build` - Builds the application into static HTML, CSS, and JS files in the `build/` directory.
+- `npm start` - Runs the app in development mode. Opens on http;//localhost:3000 to view on browser.
