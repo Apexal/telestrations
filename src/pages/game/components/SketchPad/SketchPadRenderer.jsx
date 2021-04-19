@@ -72,8 +72,8 @@ export default class SketchPadRenderer extends Component {
     return Math.sqrt(Math.pow(posAX - posBX, 2) + Math.pow(posAY - posBY, 2))
   }
 
-  samePos (posA, posB) {
-    return posA.x === posB.x && posA.y === posB.y
+  samePos (posAX, posAY, posBX, posBY) {
+    return posAX === posBX && posAY === posBY
   }
 
   optimizeStrokes (anyStrokes) {

@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import CanvasDisplay from './CanvasDisplay'
 import SketchPadRenderer from './SketchPad/SketchPadRenderer'
 
 export default class GameRound extends Component {
@@ -10,7 +11,7 @@ export default class GameRound extends Component {
 
   handlePreviousDrawingGuessFormSubmit (event) {
     event.preventDefault()
-    this.props.onPreviousDrawingGuessUpdate(event.currentTarget.guess.value)
+    this.props.onPreviousDrawingGuessUpdate(event.currentTarget.guess.value.trim())
   }
 
   render () {
@@ -33,22 +34,31 @@ export default class GameRound extends Component {
       )
     } else if (this.props.isDrawingStage) {
       return (
-        <div>
-          <h1>Draw</h1>
-          You guessed <strong>{this.props.previousDrawingGuess}</strong>
-          Now draw your own sketch of it!
+        <div className='center'>
+          <h1>Draw - Round {this.props.roundIndex}</h1>
+          <span>
+            You guessed <strong className='fancy'>{this.props.previousDrawingGuess}</strong>. 
+            Now draw your own sketch of it!
+          </span>
 
           <p>{this.props.roundTimerSecondsRemaining}s remaining</p>
           {sketchPad}
         </div>
       )
     } else {
+      const currentPlayerIndex = this.props.playerKeys.findIndex(key => key === this.props.sessionId)
+      const previousPlayerIndex = (currentPlayerIndex + 1) % this.props.playerKeys.length
+      const previousPlayerKey = this.props.playerKeys[previousPlayerIndex]
+      const previousPlayer = this.props.players[previousPlayerKey]
+      const previousDrawingStrokes = this.props.players[previousPlayerKey].submissions.find(sub => sub.roundIndex === this.props.roundIndex - 1).drawingStrokes
+
       return (
-        <div>
-          <h1>Guess</h1>
+        <div className='center'>
+          <h1>Guess - Round {this.props.roundIndex}</h1>
           <p>{this.props.roundTimerSecondsRemaining}s remaining</p>
           <div>
-            drawing will go here
+            <b>{previousPlayer.displayName} just drew this! Guess what it is below.</b>
+            <CanvasDisplay drawingStrokes={previousDrawingStrokes} />
           </div>
           <form onSubmit={this.handlePreviousDrawingGuessFormSubmit}>
             <input type='text' placeholder='What is this a drawing of?' name='guess' required />
