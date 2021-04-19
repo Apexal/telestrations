@@ -14,6 +14,13 @@ export default class GameRound extends Component {
     this.props.onPreviousDrawingGuessUpdate(event.currentTarget.guess.value.trim())
   }
 
+  handleTimer(roundTimerSecondsRemaining) {
+    const minutes = Math.floor(roundTimerSecondsRemaining / 60);
+    const seconds = roundTimerSecondsRemaining - (minutes * 60);
+
+    return <span><b>{minutes}</b> minute{ minutes == 1 ? "" : "s"}, <b>{seconds}</b> second{ seconds == 1 ? "" : "s"}</span>
+  }
+
   render () {
     const sketchPad = (
       <SketchPadRenderer
@@ -27,8 +34,8 @@ export default class GameRound extends Component {
       return (
         <div className='center'>
           <h4>Your word to draw is...</h4>
-          <h1>{this.props.secretWord}</h1>
-          <p>{this.props.roundTimerSecondsRemaining}s left</p>
+          <h1 className="title">{this.props.secretWord}</h1>
+          <p>{ this.handleTimer(this.props.roundTimerSecondsRemaining) } remaining</p>
           {sketchPad}
         </div>
       )
@@ -54,8 +61,8 @@ export default class GameRound extends Component {
 
       return (
         <div className='center'>
-          <h1>Guess - Round {this.props.roundIndex}</h1>
-          <p>{this.props.roundTimerSecondsRemaining}s remaining</p>
+          <h1 className="title">Guess - Round {this.props.roundIndex}</h1>
+          <p>{ this.handleTimer(this.props.roundTimerSecondsRemaining) } remaining</p>
           <div>
             <b>{previousPlayer.displayName} just drew this... masterpiece.</b>
             <br />
