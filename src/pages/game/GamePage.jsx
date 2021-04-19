@@ -25,8 +25,7 @@ class GamePage extends Component {
       maxPlayers: 1,
       players: {},
       roundIndex: 0,
-      guessingSecondsRemaining: 0,
-      drawingSecondsRemaining: 0,
+      roundTimerSecondsRemaining: 0,
       previousDrawingGuess: '',
       drawingStrokes: []
     }
@@ -57,10 +56,8 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
-        } else if (change.field === 'drawingSecondsRemaining') {
-          this.setState({ drawingSecondsRemaining: change.value })
-        } else if (change.field === 'guessingSecondsRemaining') {
-          this.setState({ guessingSecondsRemaining: change.value })
+        } else if (change.field === 'roundTimerSecondsRemaining') {
+          this.setState({ roundTimerSecondsRemaining: change.value })
         }
       })
     }

@@ -16,7 +16,7 @@ export default class GameRound extends Component {
         <div className='center'>
           <h4>Your word to draw is...</h4>
           <h1>{this.props.secretWord}</h1>
-          <p>{this.props.drawingSecondsRemaining} seconds left</p>
+          <p>{this.props.roundTimerSecondsRemaining}s left</p>
           {sketchPad}
         </div>
       )
@@ -37,7 +37,7 @@ export default class GameRound extends Component {
           You guessed <strong>{this.state.previousDrawingGuess}</strong>
           Now draw your own sketch of it!
 
-          <p>{this.props.drawingSecondsRemaining} seconds left</p>
+          <p>{this.props.roundTimerSecondsRemaining}s remaining</p>
           {sketchPad}
         </div>
       )
