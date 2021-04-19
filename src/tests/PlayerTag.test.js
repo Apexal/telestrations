@@ -1,21 +1,13 @@
 import React from 'react';
 import { render } from "@testing-library/react";
-import { unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
 import PlayerTag from "../pages/game/components/PlayerTag";
-/*
-let container = null;
-beforeEach(() => {
-  container = document.createElement("div");
-  document.body.appendChild(container);
+
+it("renders with (You)", async() => {
+  const { container } = render(<PlayerTag sessionId="0" isPlayer={true} isHost={true} displayName={"Mr. Jest"} />);
+
+  expect(container.querySelector("div").textContent).toEqual("👑 Mr. Jest(You)");
 });
 
-afterEach(() => {
-  unmountComponentAtNode(container);
-  container.remove();
-  container = null;
-});
-*/
 it("renders with a crown when host", async () => {
   const { container } = render(<PlayerTag sessionId="0" isPlayer={true} isHost={true} displayName={"Mr. Jest"} />);
 
