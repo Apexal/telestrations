@@ -24,11 +24,12 @@ class GamePage extends Component {
       errorMessage: null,
       maxPlayers: 1,
       players: {},
+      playerKeys: [],
       roundIndex: 0,
-      guessingSecondsRemaining: 0,
-      drawingSecondsRemaining: 0,
+      roundTimerSecondsRemaining: 0,
       previousDrawingGuess: '',
-      drawingStrokes: []
+      drawingStrokes: [],
+      isDrawingStage: false
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -36,6 +37,7 @@ class GamePage extends Component {
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleStartGame = this.handleStartGame.bind(this)
     this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
+    this.handlePreviousDrawingGuessUpdate = this.handlePreviousDrawingGuessUpdate.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
@@ -49,6 +51,17 @@ class GamePage extends Component {
 
   setupGameRoomEventListeners () {
     const room = getGameRoom()
+
+    room.onMessage('send-submissions', this.handleSubmit)
+
+    room.onMessage('round-end', () => {
+      this.setState({
+        drawingStrokes: [],
+        previousDrawingGuess: '',
+        isDrawingStage: false
+      })
+    })
+
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (change.field === 'hostPlayerClientId') {
@@ -57,10 +70,8 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
-        } else if (change.field === 'drawingSecondsRemaining') {
-          this.setState({ drawingSecondsRemaining: change.value })
-        } else if (change.field === 'guessingSecondsRemaining') {
-          this.setState({ guessingSecondsRemaining: change.value })
+        } else if (change.field === 'roundTimerSecondsRemaining') {
+          this.setState({ roundTimerSecondsRemaining: change.value })
         }
       })
     }
@@ -68,7 +79,8 @@ class GamePage extends Component {
     room.state.players.onAdd = (player, key) => {
       console.log(player, 'has been added at', key)
       this.setState((state) => ({
-        players: { ...state.players, [key]: player }
+        players: { ...state.players, [key]: player },
+        playerKeys: [...state.playerKeys, key]
       }))
 
       player.onChange = (changes) => {
@@ -83,7 +95,8 @@ class GamePage extends Component {
       const newPlayers = Object.assign({}, this.state.players)
       delete newPlayers[key]
       this.setState({
-        players: newPlayers
+        players: newPlayers,
+        playerKeys: this.state.playerKeys.filter(k => k !== key)
       })
     }
 
@@ -113,6 +126,13 @@ class GamePage extends Component {
 
   handleDrawingStrokesUpdate (drawingStrokes, callback) {
     this.setState({ drawingStrokes }, callback)
+  }
+
+  handlePreviousDrawingGuessUpdate (newPreviousDrawingGuess) {
+    this.setState({
+      previousDrawingGuess: newPreviousDrawingGuess,
+      isDrawingStage: true
+    })
   }
 
   handleSubmit () {
@@ -201,6 +221,7 @@ class GamePage extends Component {
             secretWord={this.state.players[this.state.sessionId].secretWord}
             onSubmit={this.handleSubmit}
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
+            onPreviousDrawingGuessUpdate={this.handlePreviousDrawingGuessUpdate}
             {...this.state}
           />
         )

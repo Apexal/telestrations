@@ -24,3 +24,7 @@ button[disabled] {
 .center {
 	text-align: center;
 }
+
+.fancy {
+  font-family: "Luckiest Guy", sans-serif;
+}
