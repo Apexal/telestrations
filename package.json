@@ -3,8 +3,8 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.1.10",
     "colyseus.js": "^0.14.8",
     "react": "^17.0.1",
@@ -16,7 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "standard && react-scripts test",
+    "test": "react-scripts test",
     "fix": "standard --fix",
     "eject": "react-scripts eject"
   },
@@ -26,6 +26,9 @@
       "react-app/jest"
     ]
   },
+  "presets": [
+    "@babel/preset-react"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",
@@ -39,6 +42,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.12.13",
+    "@babel/preset-react": "^7.13.13",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.0",
+    "react-test-renderer": "^17.0.2",
     "standard": "^16.0.3"
   }
 }

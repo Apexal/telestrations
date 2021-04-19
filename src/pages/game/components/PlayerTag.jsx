@@ -9,7 +9,7 @@ export default function PlayerTag ({ sessionId, isPlayer, isHost, displayName })
     <li key={sessionId}>
       <div className='player-tag player-tag-add-anim'>
         <span>
-          {isHost ? '👑' : ''} {displayName}
+          {isHost ? '👑 ' : ''}{displayName}
         </span>
         {isPlayer && <strong style={{ marginLeft: 5 }}>(You)</strong>}
       </div>
