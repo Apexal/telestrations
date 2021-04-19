@@ -48,6 +48,9 @@ class GamePage extends Component {
 
   setupGameRoomEventListeners () {
     const room = getGameRoom()
+
+    room.onMessage('send-submissions', this.handleSubmit)
+
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (change.field === 'hostPlayerClientId') {
