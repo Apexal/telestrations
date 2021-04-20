@@ -108,7 +108,7 @@ export default class SketchPadRenderer extends Component {
   }
 
   onMouseMove (event) {
-    if (event.buttons !== 1) return
+    if (event.buttons !== 1 || this.props.isSubmitted) return
 
     const to = this.getMousePos(event)
 
@@ -171,6 +171,7 @@ export default class SketchPadRenderer extends Component {
           Sorry, your browser does not support canvas.
         </canvas>
         <SketchControlBar
+          isSubmitted={this.props.isSubmitted}
           onClear={this.handleClear}
           onUndo={this.handleUndo}
           onSubmit={this.props.onSubmit}

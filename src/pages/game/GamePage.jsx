@@ -49,6 +49,10 @@ class GamePage extends Component {
     return this.state.players[this.state.sessionId]
   }
 
+  isSubmitted () {
+    return !!this.state.players[this.state.sessionId].submissions.find(sub => sub.roundIndex === this.state.roundIndex)
+  }
+
   setupGameRoomEventListeners () {
     const room = getGameRoom()
 
@@ -125,6 +129,8 @@ class GamePage extends Component {
   }
 
   handleDrawingStrokesUpdate (drawingStrokes, callback) {
+    if (this.isSubmitted()) return
+
     this.setState({ drawingStrokes }, callback)
   }
 
@@ -218,6 +224,7 @@ class GamePage extends Component {
       } else if (this.state.roundIndex > 0) {
         return (
           <GameRound
+            isSubmitted={this.isSubmitted()}
             secretWord={this.state.players[this.state.sessionId].secretWord}
             onSubmit={this.handleSubmit}
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
