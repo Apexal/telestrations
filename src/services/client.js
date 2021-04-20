@@ -43,6 +43,7 @@ export async function hostGame () {
  */
 export async function joinGameRoom (roomId) {
   gameRoom = await client.joinById(roomId)
+  lobby = null
 
   // TODO: Save room id for reconnects
   window.localStorage.setItem('lastRoomId', roomId)
