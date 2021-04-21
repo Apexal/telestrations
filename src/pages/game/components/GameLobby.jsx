@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import config from '../../../config'
 import PlayerTag from './PlayerTag'
 
@@ -38,7 +39,7 @@ export default function GameLobby ({
         {playerTags}
       </ul>
 
-      {isHost && hostButton}
+      {isHost ? hostButton : <Link className='button' to='/'>Leave</Link>}
       {players[sessionId] &&
         <button className='button u-pull-right' onClick={onChangeName}>Change Name</button>}
     </div>
