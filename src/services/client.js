@@ -1,7 +1,7 @@
 import * as colyseus from 'colyseus.js'
-import { serverURL } from '../config'
+import config from '../config'
 
-const client = new colyseus.Client('ws://' + serverURL)
+const client = new colyseus.Client('ws://' + config.serverURL)
 
 let lobby = null
 
