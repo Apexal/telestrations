@@ -42,7 +42,7 @@ export default class PublicGameListing extends Component {
   }
 
   renderPublicGames () {
-    if (this.props.publicRooms.length <= 0) { return <i>There are no open public rooms!</i> }
+    if (this.props.publicRooms.length <= 0) { return <div className='center'><i>There are no open public rooms!</i></div> }
 
     return this.props.publicRooms.map((room, roomIndex) => (
       <div className='row' key={room.roomId}>
