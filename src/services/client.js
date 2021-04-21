@@ -18,6 +18,17 @@ export async function joinLobby () {
   return lobby
 }
 
+/**
+ * Disconnect from the lobby.
+ */
+export function leaveLobby () {
+  if (gameRoom === null) return
+
+  lobby.removeAllListeners()
+  lobby.leave()
+  lobby = null
+}
+
 let gameRoom = null
 
 /**
