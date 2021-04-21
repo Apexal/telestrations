@@ -8,7 +8,7 @@ export default class Error extends Component {
         <h1>{this.props.title}</h1>
         {this.props.children}
         <Link className='button' to='/'>Home</Link>
-        <a href='https://github.com/Apexal/telestrations/issues/new' target='_blank' rel="noreferrer" className='button'>Report Bug</a>
+        <a href='https://github.com/Apexal/telestrations/issues/new' target='_blank' rel='noreferrer' className='button'>Report Bug</a>
       </div>
     )
   }
