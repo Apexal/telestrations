@@ -47,7 +47,7 @@ export default class GameRound extends Component {
     } else if (this.props.isDrawingStage) {
       return (
         <div className='center'>
-          <h1 className='title scale-in'>Draw - Round {this.props.roundIndex}</h1>
+          <h1 className='title'>Draw - Round {this.props.roundIndex}</h1>
           <p className='timer'>⏰ {this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
 
           <div>
@@ -67,7 +67,7 @@ export default class GameRound extends Component {
 
       return (
         <div className='center'>
-          <h1 className='scale-in'>Guess - Round {this.props.roundIndex}</h1>
+          <h1>Guess - Round {this.props.roundIndex}</h1>
           <p className='timer'>⏰ {this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
           <div>
             <b>{previousPlayer.displayName} just drew this... masterpiece.</b>
