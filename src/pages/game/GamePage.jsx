@@ -1,15 +1,15 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
 import GameLobby from './components/GameLobby'
 import GameRound from './components/GameRound'
 
 import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
 import '../../styles/game.css'
+import Error from '../../components/Error'
 
 /**
- * Wrapper component class for entire game. This allows us
+ * Wrapper component class for entire game.
  */
 class GamePage extends Component {
   constructor (props) {
@@ -248,11 +248,9 @@ class GamePage extends Component {
         )}
         {this.state.isInGame && gameComponent}
         {this.state.errorMessage &&
-          <div>
-            <h1>An Error Occurred</h1>
+          <Error title='An Error Occurred'>
             <p>{this.state.errorMessage}</p>
-            <Link className='button' to='/'>Home</Link>
-          </div>}
+          </Error>}
       </div>
     )
   }
