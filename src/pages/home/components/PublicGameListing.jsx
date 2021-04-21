@@ -66,7 +66,7 @@ export default class PublicGameListing extends Component {
     return this.state.rooms.map((room, roomIndex) => (
       <div className='row' key={room.roomId}>
         <Link to={'/' + room.roomId} className='button u-full-width'>
-          Game {roomIndex + 1} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
+          Game {room.roomId} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
         </Link>
       </div>
     ))
