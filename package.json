@@ -17,6 +17,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "standard && react-scripts test",
+    "serve": "serve -s build -l 8080",
     "fix": "standard --fix",
     "eject": "react-scripts eject",
     "prepare": "husky install"

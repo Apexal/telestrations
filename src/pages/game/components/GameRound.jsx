@@ -63,7 +63,18 @@ export default class GameRound extends Component {
       const previousPlayerIndex = (currentPlayerIndex + 1) % this.props.playerKeys.length
       const previousPlayerKey = this.props.playerKeys[previousPlayerIndex]
       const previousPlayer = this.props.players[previousPlayerKey]
-      const previousDrawingStrokes = this.props.players[previousPlayerKey].submissions.find(sub => sub.roundIndex === this.props.roundIndex - 1).drawingStrokes
+      const previousDrawingSubmission = this.props.players[previousPlayerKey].submissions.find(sub => sub.roundIndex === this.props.roundIndex - 1)
+
+      // In the event that a disconnected player hasn't had their submission made yet
+      if (!previousDrawingSubmission) {
+        return (
+          <div className='center'>
+            <h1>Collecting player drawings...</h1>
+          </div>
+        )
+      }
+
+      const previousDrawingStrokes = previousDrawingSubmission.drawingStrokes
 
       return (
         <div className='center'>
