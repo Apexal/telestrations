@@ -1,4 +1,3 @@
-import React from 'react'
 import '../../../styles/player-tag.css'
 
 /*
@@ -8,11 +7,11 @@ import '../../../styles/player-tag.css'
 export default function PlayerTag ({ sessionId, isPlayer, isHost, displayName }) {
   return (
     <li key={sessionId}>
-      <div className="player-tag player-tag-add-anim">
+      <div className='player-tag player-tag-add-anim'>
         <span>
           {isHost ? '👑' : ''} {displayName}
         </span>
-        {isPlayer && <strong style={{marginLeft: 5}}>(You)</strong>}
+        {isPlayer && <strong style={{ marginLeft: 5 }}>(You)</strong>}
       </div>
     </li>
   )

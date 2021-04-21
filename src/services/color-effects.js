@@ -14,7 +14,7 @@ const getColor = (cc) => {
   cc[2] + '%)'
 }
 
-export default function configureBackgroundColors() {
+export default function configureBackgroundColors () {
   const cc = getColorCombo()
   document.body.style.backgroundColor = getColor(cc)
 };

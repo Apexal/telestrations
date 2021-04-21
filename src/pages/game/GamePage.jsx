@@ -1,15 +1,15 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom'
 import GameLobby from './components/GameLobby'
-import SketchPad from './components/SketchPad/SketchPad'
+import GameRound from './components/GameRound'
 
 import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
 import '../../styles/game.css'
+import Error from '../../components/Error'
 
 /**
- * Wrapper component class for entire game. This allows us
+ * Wrapper component class for entire game.
  */
 class GamePage extends Component {
   constructor (props) {
@@ -24,13 +24,21 @@ class GamePage extends Component {
       errorMessage: null,
       maxPlayers: 1,
       players: {},
-      roundIndex: 0
+      playerKeys: [],
+      roundIndex: 0,
+      roundTimerSecondsRemaining: 0,
+      previousDrawingGuess: '',
+      drawingStrokes: [],
+      isDrawingStage: false
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
     this.setupGameRoomEventListeners = this.setupGameRoomEventListeners.bind(this)
     this.handleChangeName = this.handleChangeName.bind(this)
     this.handleStartGame = this.handleStartGame.bind(this)
+    this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
+    this.handlePreviousDrawingGuessUpdate = this.handlePreviousDrawingGuessUpdate.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   getGameRoomId () {
@@ -41,8 +49,23 @@ class GamePage extends Component {
     return this.state.players[this.state.sessionId]
   }
 
+  isSubmitted () {
+    return !!this.state.players[this.state.sessionId].submissions.find(sub => sub.roundIndex === this.state.roundIndex)
+  }
+
   setupGameRoomEventListeners () {
     const room = getGameRoom()
+
+    room.onMessage('send-submissions', this.handleSubmit)
+
+    room.onMessage('round-end', () => {
+      this.setState({
+        drawingStrokes: [],
+        previousDrawingGuess: '',
+        isDrawingStage: false
+      })
+    })
+
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (change.field === 'hostPlayerClientId') {
@@ -51,6 +74,8 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
+        } else if (change.field === 'roundTimerSecondsRemaining') {
+          this.setState({ roundTimerSecondsRemaining: change.value })
         }
       })
     }
@@ -58,7 +83,8 @@ class GamePage extends Component {
     room.state.players.onAdd = (player, key) => {
       console.log(player, 'has been added at', key)
       this.setState((state) => ({
-        players: { ...state.players, [key]: player }
+        players: { ...state.players, [key]: player },
+        playerKeys: [...state.playerKeys, key]
       }))
 
       player.onChange = (changes) => {
@@ -73,7 +99,8 @@ class GamePage extends Component {
       const newPlayers = Object.assign({}, this.state.players)
       delete newPlayers[key]
       this.setState({
-        players: newPlayers
+        players: newPlayers,
+        playerKeys: this.state.playerKeys.filter(k => k !== key)
       })
     }
 
@@ -99,6 +126,28 @@ class GamePage extends Component {
   handleStartGame () {
     const room = getGameRoom()
     room.send('start_game')
+  }
+
+  handleDrawingStrokesUpdate (drawingStrokes, callback) {
+    if (this.isSubmitted()) return
+
+    this.setState({ drawingStrokes }, callback)
+  }
+
+  handlePreviousDrawingGuessUpdate (newPreviousDrawingGuess) {
+    this.setState({
+      previousDrawingGuess: newPreviousDrawingGuess,
+      isDrawingStage: true
+    })
+  }
+
+  handleSubmit () {
+    const room = getGameRoom()
+    room.send('player_submit_submission', {
+      roundIndex: this.state.roundIndex,
+      previousDrawingGuess: this.state.previousDrawingGuess,
+      drawingStrokes: this.state.drawingStrokes
+    })
   }
 
   async componentDidMount () {
@@ -167,14 +216,21 @@ class GamePage extends Component {
             hostPlayerClientId={this.state.hostPlayerClientId}
             players={this.state.players}
             maxPlayers={this.state.maxPlayers}
+            onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             onChangeName={this.handleChangeName}
             onStartGame={this.handleStartGame}
           />
         )
       } else if (this.state.roundIndex > 0) {
-        const player = this.getPlayer()
         return (
-          <SketchPad secretWord={player.secretWord} />
+          <GameRound
+            isSubmitted={this.isSubmitted()}
+            secretWord={this.state.players[this.state.sessionId].secretWord}
+            onSubmit={this.handleSubmit}
+            onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
+            onPreviousDrawingGuessUpdate={this.handlePreviousDrawingGuessUpdate}
+            {...this.state}
+          />
         )
       }
     }
@@ -192,11 +248,9 @@ class GamePage extends Component {
         )}
         {this.state.isInGame && gameComponent}
         {this.state.errorMessage &&
-          <div>
-            <h1>An Error Occurred</h1>
+          <Error title='An Error Occurred'>
             <p>{this.state.errorMessage}</p>
-            <Link className='button' to='/'>Home</Link>
-          </div>}
+          </Error>}
       </div>
     )
   }

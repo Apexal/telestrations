@@ -1,45 +1,30 @@
 import { Component } from 'react'
-import { joinLobby } from '../../../services/client'
+import { joinLobby, leaveLobby } from '../../../services/client'
 import { Link } from 'react-router-dom'
 
 export default class PublicGameListing extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      lobby: null,
-      rooms: []
-    }
-  }
-
   async componentDidMount () {
     const lobby = await joinLobby()
 
-    this.setState({ lobby })
-
-    console.log(lobby)
+    console.log('did mount', lobby)
 
     // The rooms event is from the built-in Colyseus lobby room
     lobby.onMessage('rooms', rooms => {
-      this.setState({ rooms })
+      this.props.onSetPublicRooms(rooms)
 
       console.log('Received lobby rooms: ', rooms)
     })
 
     // The + event is from the built-in Colyseus lobby room
     lobby.onMessage('+', ([roomId, room]) => {
-      const roomIndex = this.state.rooms.findIndex((room) => room.roomId === roomId)
+      const roomIndex = this.props.publicRooms.findIndex((room) => room.roomId === roomId)
 
       if (roomIndex !== -1) {
         // Update existing room
-        this.setState((state, props) => ({
-          rooms: state.rooms.map((r, index) => (roomIndex === index) ? room : r)
-        }))
+        this.props.onSetPublicRooms(this.props.publicRooms.map((r, index) => (roomIndex === index) ? room : r))
       } else {
         // Add new room
-        this.setState((state, props) => ({
-          rooms: [room, ...state.rooms]
-        }))
+        this.props.onSetPublicRooms([room, ...this.props.publicRooms])
       }
 
       console.log('added/updated room', room)
@@ -47,23 +32,19 @@ export default class PublicGameListing extends Component {
 
     // The - event is from the built-in Colyseus lobby room
     lobby.onMessage('-', (roomId) => {
-      this.setState((state, props) => ({
-        rooms: state.rooms.filter(room => room.roomId !== roomId)
-      }))
+      this.props.onSetPublicRooms(this.props.publicRooms.filter(room => room.roomId !== roomId))
     })
   }
 
   componentWillUnmount () {
-    // the lobby doesn't exist, so don't try removing the event listeners
-    if (!this.state.lobby) { return }
-
-    this.state.lobby.removeAllListeners()
+    console.log('leave lobby')
+    leaveLobby()
   }
 
   renderPublicGames () {
-    if (this.state.rooms.length <= 0) { return <i>There are no active public rooms!</i> }
+    if (this.props.publicRooms.length <= 0) { return <div className='center'><i>There are no open public rooms!</i></div> }
 
-    return this.state.rooms.map((room, roomIndex) => (
+    return this.props.publicRooms.map((room, roomIndex) => (
       <div className='row' key={room.roomId}>
         <Link to={'/' + room.roomId} className='button u-full-width'>
           Game {room.roomId} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>

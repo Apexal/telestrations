@@ -12,18 +12,26 @@ class HomePage extends Component {
 
     this.state = {
       showPublicGames: false,
-      showPrivateGame: false
+      showPrivateGame: false,
+      publicRooms: []
     }
 
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
+    this.handleSetPublicRooms = this.handleSetPublicRooms.bind(this)
 
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
   }
 
   handleShowPublicGames () {
     this.setState({ showPublicGames: !this.state.showPublicGames })
+  }
+
+  handleSetPublicRooms (publicRooms) {
+    this.setState({
+      publicRooms
+    })
   }
 
   handleShowPrivateGame () {
@@ -64,7 +72,7 @@ class HomePage extends Component {
           </button>
 
           <HiddenPanel visible={this.state.showPublicGames}>
-            <PublicGameListing />
+            <PublicGameListing publicRooms={this.state.publicRooms} onSetPublicRooms={this.handleSetPublicRooms} />
           </HiddenPanel>
         </div>
 

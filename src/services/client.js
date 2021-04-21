@@ -1,6 +1,6 @@
-import { Client, Room } from 'colyseus.js'
+import * as colyseus from 'colyseus.js'
 
-const client = new Client('ws://localhost:2567')
+const client = new colyseus.Client('ws://localhost:2567')
 
 let lobby = null
 
@@ -16,6 +16,17 @@ export async function joinLobby () {
   lobby = await client.joinOrCreate('lobby')
 
   return lobby
+}
+
+/**
+ * Disconnect from the lobby.
+ */
+export function leaveLobby () {
+  if (gameRoom === null) return
+
+  lobby.removeAllListeners()
+  lobby.leave()
+  lobby = null
 }
 
 let gameRoom = null
@@ -38,11 +49,12 @@ export async function hostGame () {
  * Attempts to connect to game room identified by a room id.
  *
  * @param {string} roomId Unique identifier of game room, e.g. "OEGHW"
- * @returns {Promise<Room>} Newly connected game room
+ * @returns {Promise<colyseus.Room>} Newly connected game room
  * @throws Error if game room doesn't exist or failed to connect
  */
 export async function joinGameRoom (roomId) {
   gameRoom = await client.joinById(roomId)
+  lobby = null
 
   // TODO: Save room id for reconnects
   window.localStorage.setItem('lastRoomId', roomId)
@@ -53,7 +65,7 @@ export async function joinGameRoom (roomId) {
 /**
  * Return the currently connected game room or null if not connected.
  *
- * @returns {Room} Currently connected game room
+ * @returns {colyseus.Room} Currently connected game room
  */
 export function getGameRoom () {
   return gameRoom
