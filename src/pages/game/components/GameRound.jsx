@@ -40,7 +40,7 @@ export default class GameRound extends Component {
         <div className='center'>
           <h4>Your word to draw is...</h4>
           <h1 className='title scale-in secret-word'>{this.props.secretWord}</h1>
-          <p>{this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
+          <p className='timer'>⏰ {this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
           {sketchPad}
         </div>
       )
@@ -48,12 +48,13 @@ export default class GameRound extends Component {
       return (
         <div className='center'>
           <h1 className='title scale-in'>Draw - Round {this.props.roundIndex}</h1>
-          <span>
+          <p className='timer'>⏰ {this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
+
+          <div>
             You guessed <strong className='fancy'>{this.props.previousDrawingGuess}</strong>.
             Now draw your own sketch of it!
-          </span>
+          </div>
 
-          <p>{this.props.roundTimerSecondsRemaining}s remaining</p>
           {sketchPad}
         </div>
       )
@@ -67,7 +68,7 @@ export default class GameRound extends Component {
       return (
         <div className='center'>
           <h1 className='scale-in'>Guess - Round {this.props.roundIndex}</h1>
-          <p>{this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
+          <p className='timer'>⏰ {this.handleTimer(this.props.roundTimerSecondsRemaining)} remaining</p>
           <div>
             <b>{previousPlayer.displayName} just drew this... masterpiece.</b>
             <br />

@@ -96,7 +96,7 @@
   }
 }
 
-
-.button + .button {
-  margin-left: 10px;
+.timer {
+  margin: -2rem 0 1rem 0;
 }
+
