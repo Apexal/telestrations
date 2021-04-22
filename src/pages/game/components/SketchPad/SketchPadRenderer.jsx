@@ -4,7 +4,6 @@ import SketchControlBar from './SketchControlBar'
 /**
  * Manages the drawing / exporting operations on top of the canvas object.
  */
-
 export default class SketchPadRenderer extends Component {
   constructor (props) {
     super(props)
@@ -30,6 +29,8 @@ export default class SketchPadRenderer extends Component {
     this.onMouseMove = this.onMouseMove.bind(this)
     this.onMouseClick = this.onMouseClick.bind(this)
     this.onMouseReleased = this.onMouseReleased.bind(this)
+    this.onTouchMove = this.onTouchMove.bind(this)
+    this.onTouchStart = this.onTouchStart.bind(this)
   }
 
   componentDidMount () {
@@ -40,6 +41,8 @@ export default class SketchPadRenderer extends Component {
     this.canvasRef.current.addEventListener('mousedown', this.onMouseClick)
     this.canvasRef.current.addEventListener('mouseup', this.onMouseReleased)
     this.canvasRef.current.addEventListener('mousemove', this.onMouseMove)
+    this.canvasRef.current.addEventListener('touchmove', this.onTouchMove)
+    this.canvasRef.current.addEventListener('touchstart', this.onTouchStart)
   }
 
   drawStroke (stroke) {
@@ -108,6 +111,8 @@ export default class SketchPadRenderer extends Component {
   }
 
   onMouseMove (event) {
+    event.preventDefault()
+    event.stopPropagation()
     if (event.buttons !== 1 || this.props.isSubmitted) return
 
     const to = this.getMousePos(event)
@@ -131,6 +136,25 @@ export default class SketchPadRenderer extends Component {
 
   onMouseReleased () {
     this.redraw()
+  }
+
+  onTouchMove (event) {
+    event.preventDefault()
+
+    const touch = event.touches[0]
+    const mouseEvent = new window.MouseEvent('mousemove', {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      buttons: 1
+    })
+    this.canvasRef.current.dispatchEvent(mouseEvent)
+  }
+
+  onTouchStart (event) {
+    event.preventDefault()
+
+    const pos = this.getMousePos(event.touches[0])
+    this.setCurrentPosition(pos.x, pos.y)
   }
 
   handleClear () {

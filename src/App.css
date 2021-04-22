@@ -12,6 +12,7 @@
 
 body {
   margin: 2rem 0;
+  overscroll-behavior: contain;
 }
 
 h1 {
