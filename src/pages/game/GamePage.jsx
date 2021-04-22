@@ -2,6 +2,7 @@ import { Component } from 'react'
 import { withRouter } from 'react-router'
 import GameLobby from './components/GameLobby'
 import GameRound from './components/GameRound'
+import GameOver from './components/GameOver'
 
 import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
@@ -29,7 +30,8 @@ class GamePage extends Component {
       roundTimerSecondsRemaining: 0,
       previousDrawingGuess: '',
       drawingStrokes: [],
-      isDrawingStage: false
+      isDrawingStage: false,
+      isGameOver: false
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -74,6 +76,8 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
+        } else if (change.field === 'isGameOver') {
+          this.setState({ isGameOver: change.value })
         } else if (change.field === 'roundTimerSecondsRemaining') {
           this.setState({ roundTimerSecondsRemaining: change.value })
         }
@@ -219,6 +223,13 @@ class GamePage extends Component {
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             onChangeName={this.handleChangeName}
             onStartGame={this.handleStartGame}
+          />
+        )
+      } else if (this.state.isGameOver) {
+        return (
+          <GameOver
+            playerKeys={this.state.playerKeys}
+            players={this.state.players}
           />
         )
       } else if (this.state.roundIndex > 0) {
