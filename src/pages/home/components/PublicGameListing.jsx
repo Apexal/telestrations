@@ -6,13 +6,9 @@ export default class PublicGameListing extends Component {
   async componentDidMount () {
     const lobby = await joinLobby()
 
-    console.log('did mount', lobby)
-
     // The rooms event is from the built-in Colyseus lobby room
     lobby.onMessage('rooms', rooms => {
       this.props.onSetPublicRooms(rooms)
-
-      console.log('Received lobby rooms: ', rooms)
     })
 
     // The + event is from the built-in Colyseus lobby room
@@ -26,8 +22,6 @@ export default class PublicGameListing extends Component {
         // Add new room
         this.props.onSetPublicRooms([room, ...this.props.publicRooms])
       }
-
-      console.log('added/updated room', room)
     })
 
     // The - event is from the built-in Colyseus lobby room
@@ -37,7 +31,6 @@ export default class PublicGameListing extends Component {
   }
 
   componentWillUnmount () {
-    console.log('leave lobby')
     leaveLobby()
   }
 
