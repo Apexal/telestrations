@@ -60,8 +60,21 @@ export async function joinGameRoom (roomId) {
 
   gameRoom = await client.joinById(roomId)
 
-  // TODO: Save room id for reconnects
+  // Save room id for reconnects
   window.localStorage.setItem('lastRoomId', roomId)
+  window.localStorage.setItem('lastSessionId', gameRoom.sessionId)
+
+  return gameRoom
+}
+
+/**
+ * Attempt to reconnect to the last game room.
+ */
+export async function reconnectToGameRoom () {
+  const lastRoomId = window.localStorage.getItem('lastRoomId')
+  const lastSessionId = window.localStorage.getItem('lastSessionId')
+
+  gameRoom = await client.reconnect(lastRoomId, lastSessionId)
 
   return gameRoom
 }
@@ -77,6 +90,9 @@ export function getGameRoom () {
 
 export function leaveGameRoom () {
   if (gameRoom === null) return
+
+  window.localStorage.removeItem('lastRoomId')
+  window.localStorage.removeItem('lastSessionId')
 
   gameRoom.removeAllListeners()
   gameRoom.leave()
