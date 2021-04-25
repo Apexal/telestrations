@@ -100,3 +100,12 @@
   margin: -2rem 0 1rem 0;
 }
 
+div.color-preview {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 100%;
+}
+
+span.thick-stroke {
+  font-weight: bolder;
+}

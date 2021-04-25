@@ -210,11 +210,17 @@ export default class SketchPadRenderer extends Component {
   }
 
   render () {
+    const colorButtonStyle = {
+      width: this.state.width * 2,
+      height: this.state.width * 2,
+      backgroundColor: config.colors[this.state.colorIndex]
+    }
+
     return (
       <div>
         <div>
-          <button className="button" onClick={this.handleToggleWidth}>Thick</button>
-          <button className='color' onClick={this.handleCycleColor}>Color <div style={{ display: 'inline-block', verticalAlign: 'middle', width: 20, height: 20, backgroundColor: this.state.color }} /></button>
+          <button className='button' onClick={this.handleToggleWidth}>{this.state.width === config.thickWidth ? <strong className='thick-stroke'>Thick</strong> : 'Thin'} Stroke</button>
+          <button className='button' onClick={this.handleCycleColor}><div className='color-preview' style={colorButtonStyle} /></button>
         </div>
         <canvas id='canvas' ref={this.canvasRef} width='400' height='400'>
           Sorry, your browser does not support canvas.
