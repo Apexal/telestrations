@@ -79,16 +79,8 @@ class GamePage extends Component {
 
     room.state.onChange = (changes) => {
       changes.forEach(change => {
-        if (change.field === 'hostPlayerSessionId') {
-          this.setState({ hostPlayerSessionId: change.value })
-        } else if (change.field === 'maxPlayers') {
-          this.setState({ maxPlayers: change.value })
-        } else if (change.field === 'roundIndex') {
-          this.setState({ roundIndex: change.value })
-        } else if (change.field === 'isGameOver') {
-          this.setState({ isGameOver: change.value })
-        } else if (change.field === 'roundTimerSecondsRemaining') {
-          this.setState({ roundTimerSecondsRemaining: change.value })
+        if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining'].includes(change.field)) {
+          this.setState({ [change.field]: change.value })
         }
       })
     }
