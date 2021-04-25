@@ -22,7 +22,7 @@ class GamePage extends Component {
       isJoiningGame: true,
       isInGame: false,
       isStateLoaded: false,
-      hostPlayerClientId: '',
+      hostPlayerSessionId: '',
       errorMessage: null,
       maxPlayers: 1,
       players: {},
@@ -59,6 +59,8 @@ class GamePage extends Component {
   setupGameRoomEventListeners () {
     const room = getGameRoom()
 
+    room.onMessage('error', window.alert)
+
     room.onMessage('send-submissions', this.handleSubmit)
 
     room.onMessage('round-end', () => {
@@ -77,16 +79,8 @@ class GamePage extends Component {
 
     room.state.onChange = (changes) => {
       changes.forEach(change => {
-        if (change.field === 'hostPlayerClientId') {
-          this.setState({ hostPlayerClientId: change.value })
-        } else if (change.field === 'maxPlayers') {
-          this.setState({ maxPlayers: change.value })
-        } else if (change.field === 'roundIndex') {
-          this.setState({ roundIndex: change.value })
-        } else if (change.field === 'isGameOver') {
-          this.setState({ isGameOver: change.value })
-        } else if (change.field === 'roundTimerSecondsRemaining') {
-          this.setState({ roundTimerSecondsRemaining: change.value })
+        if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining'].includes(change.field)) {
+          this.setState({ [change.field]: change.value })
         }
       })
     }
@@ -185,7 +179,7 @@ class GamePage extends Component {
           sessionId: room.sessionId,
           isInGame: true,
           isJoiningGame: false,
-          isHost: room.sessionId === room.state.hostPlayerClientId,
+          isHost: room.sessionId === room.state.hostPlayerSessionId,
           errorMessage: null
         }, this.setupGameRoomEventListeners)
       }
@@ -223,7 +217,7 @@ class GamePage extends Component {
           <GameLobby
             roomId={this.state.roomId}
             sessionId={this.state.sessionId}
-            hostPlayerClientId={this.state.hostPlayerClientId}
+            hostPlayerSessionId={this.state.hostPlayerSessionId}
             players={this.state.players}
             maxPlayers={this.state.maxPlayers}
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}

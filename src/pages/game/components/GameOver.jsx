@@ -5,9 +5,13 @@ export default function GameOver (props) {
   const renderPlayerDrawingChain = (sessionId, player) => {
     const divs = []
     const playerIndex = props.playerKeys.findIndex(p => p === sessionId)
-    console.log(playerIndex, props.playerKeys)
     for (let roundIndex = 1; roundIndex <= props.playerKeys.length + (props.playerKeys.length % 2); roundIndex++) {
-      const player = props.players[props.playerKeys[(playerIndex + roundIndex) % props.playerKeys.length]]
+      let i = playerIndex - roundIndex + 1
+      if (i < 0) {
+        i = props.playerKeys.length - Math.abs(i)
+      }
+
+      const player = props.players[props.playerKeys[i]]
       const submission = player.submissions.find(sub => sub.roundIndex === roundIndex)
       divs.push(
         <div key={playerIndex + '-' + roundIndex}>
