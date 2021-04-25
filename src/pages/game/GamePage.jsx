@@ -59,6 +59,8 @@ class GamePage extends Component {
   setupGameRoomEventListeners () {
     const room = getGameRoom()
 
+    room.onMessage('error', window.alert)
+
     room.onMessage('send-submissions', this.handleSubmit)
 
     room.onMessage('round-end', () => {
