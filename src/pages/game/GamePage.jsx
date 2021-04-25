@@ -2,6 +2,7 @@ import { Component } from 'react'
 import { withRouter } from 'react-router'
 import GameLobby from './components/GameLobby'
 import GameRound from './components/GameRound'
+import GameOver from './components/GameOver'
 
 import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
 
@@ -20,6 +21,7 @@ class GamePage extends Component {
       roomId: '',
       isJoiningGame: true,
       isInGame: false,
+      isStateLoaded: false,
       hostPlayerClientId: '',
       errorMessage: null,
       maxPlayers: 1,
@@ -29,7 +31,8 @@ class GamePage extends Component {
       roundTimerSecondsRemaining: 0,
       previousDrawingGuess: '',
       drawingStrokes: [],
-      isDrawingStage: false
+      isDrawingStage: false,
+      isGameOver: false
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -50,7 +53,7 @@ class GamePage extends Component {
   }
 
   isSubmitted () {
-    return !!this.state.players[this.state.sessionId].submissions.find(sub => sub.roundIndex === this.state.roundIndex)
+    return !!this.getPlayer().submissions.find(sub => sub.roundIndex === this.state.roundIndex)
   }
 
   setupGameRoomEventListeners () {
@@ -66,6 +69,12 @@ class GamePage extends Component {
       })
     })
 
+    room.onStateChange.once((state) => {
+      this.setState({
+        isStateLoaded: true
+      })
+    })
+
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (change.field === 'hostPlayerClientId') {
@@ -74,6 +83,8 @@ class GamePage extends Component {
           this.setState({ maxPlayers: change.value })
         } else if (change.field === 'roundIndex') {
           this.setState({ roundIndex: change.value })
+        } else if (change.field === 'isGameOver') {
+          this.setState({ isGameOver: change.value })
         } else if (change.field === 'roundTimerSecondsRemaining') {
           this.setState({ roundTimerSecondsRemaining: change.value })
         }
@@ -81,7 +92,6 @@ class GamePage extends Component {
     }
 
     room.state.players.onAdd = (player, key) => {
-      console.log(player, 'has been added at', key)
       this.setState((state) => ({
         players: { ...state.players, [key]: player },
         playerKeys: [...state.playerKeys, key]
@@ -95,7 +105,6 @@ class GamePage extends Component {
     }
 
     room.state.players.onRemove = (player, key) => {
-      console.log(player, 'has been removed at', key)
       const newPlayers = Object.assign({}, this.state.players)
       delete newPlayers[key]
       this.setState({
@@ -161,7 +170,7 @@ class GamePage extends Component {
     // 2. The player clicked on a game link, typed in the code, or click a link to the game room
     //    - game room must be joined at this point
 
-    if (this.props.location.state && this.props.location.state.isHost) {
+    if (this.props.location.state && (this.props.location.state.isHost || this.props.location.state.isReconnecting)) {
       const room = getGameRoom()
       if (room === null) {
         // Refreshed page! game is dead
@@ -174,15 +183,16 @@ class GamePage extends Component {
       } else {
         this.setState({
           sessionId: room.sessionId,
-          isJoiningGame: false,
           isInGame: true,
-          isHost: true,
+          isJoiningGame: false,
+          isHost: room.sessionId === room.state.hostPlayerClientId,
           errorMessage: null
         }, this.setupGameRoomEventListeners)
       }
     } else {
       try {
         const room = await joinGameRoom(roomId)
+
         this.setState({
           sessionId: room.sessionId,
           isJoiningGame: false,
@@ -221,11 +231,18 @@ class GamePage extends Component {
             onStartGame={this.handleStartGame}
           />
         )
+      } else if (this.state.isGameOver) {
+        return (
+          <GameOver
+            playerKeys={this.state.playerKeys}
+            players={this.state.players}
+          />
+        )
       } else if (this.state.roundIndex > 0) {
         return (
           <GameRound
             isSubmitted={this.isSubmitted()}
-            secretWord={this.state.players[this.state.sessionId].secretWord}
+            secretWord={this.getPlayer().secretWord}
             onSubmit={this.handleSubmit}
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             onPreviousDrawingGuessUpdate={this.handlePreviousDrawingGuessUpdate}
@@ -237,8 +254,6 @@ class GamePage extends Component {
   }
 
   render () {
-    const gameComponent = this.renderGameComponent()
-
     return (
       <div>
         {this.state.isJoiningGame && (
@@ -246,7 +261,7 @@ class GamePage extends Component {
             Joining game room...
           </div>
         )}
-        {this.state.isInGame && gameComponent}
+        {this.state.isInGame && this.state.isStateLoaded && this.renderGameComponent()}
         {this.state.errorMessage &&
           <Error title='An Error Occurred'>
             <p>{this.state.errorMessage}</p>

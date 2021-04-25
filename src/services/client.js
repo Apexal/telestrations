@@ -23,7 +23,7 @@ export async function joinLobby () {
  * Disconnect from the lobby.
  */
 export function leaveLobby () {
-  if (gameRoom === null) return
+  if (lobby === null) return
 
   lobby.removeAllListeners()
   lobby.leave()
@@ -41,6 +41,8 @@ let gameRoom = null
 export async function hostGame () {
   if (gameRoom !== null) throw Error('Game room is not null!')
 
+  leaveLobby()
+
   gameRoom = await client.create('game_room')
 
   return gameRoom
@@ -54,11 +56,25 @@ export async function hostGame () {
  * @throws Error if game room doesn't exist or failed to connect
  */
 export async function joinGameRoom (roomId) {
-  gameRoom = await client.joinById(roomId)
-  lobby = null
+  leaveLobby()
 
-  // TODO: Save room id for reconnects
+  gameRoom = await client.joinById(roomId)
+
+  // Save room id for reconnects
   window.localStorage.setItem('lastRoomId', roomId)
+  window.localStorage.setItem('lastSessionId', gameRoom.sessionId)
+
+  return gameRoom
+}
+
+/**
+ * Attempt to reconnect to the last game room.
+ */
+export async function reconnectToGameRoom () {
+  const lastRoomId = window.localStorage.getItem('lastRoomId')
+  const lastSessionId = window.localStorage.getItem('lastSessionId')
+
+  gameRoom = await client.reconnect(lastRoomId, lastSessionId)
 
   return gameRoom
 }
@@ -74,6 +90,9 @@ export function getGameRoom () {
 
 export function leaveGameRoom () {
   if (gameRoom === null) return
+
+  window.localStorage.removeItem('lastRoomId')
+  window.localStorage.removeItem('lastSessionId')
 
   gameRoom.removeAllListeners()
   gameRoom.leave()

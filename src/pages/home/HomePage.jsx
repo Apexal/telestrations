@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { hostGame } from '../../services/client'
+import { hostGame, reconnectToGameRoom } from '../../services/client'
 import { withRouter } from 'react-router'
 
 import '../../styles/homepage.css'
@@ -13,15 +13,16 @@ class HomePage extends Component {
     this.state = {
       showPublicGames: false,
       showPrivateGame: false,
-      publicRooms: []
+      publicRooms: [],
+      canReconnect: window.localStorage.getItem('lastRoomId') !== null
     }
 
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
     this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
     this.handleSetPublicRooms = this.handleSetPublicRooms.bind(this)
-
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
+    this.handleReconnect = this.handleReconnect.bind(this)
   }
 
   handleShowPublicGames () {
@@ -55,6 +56,18 @@ class HomePage extends Component {
     event.target.roomId.value = ''
   }
 
+  handleReconnect () {
+    reconnectToGameRoom()
+      .then((room) => {
+        this.props.history.push('/' + room.id, { isReconnecting: true })
+      })
+      .catch((err) => {
+        window.alert(err)
+        window.localStorage.removeItem('lastRoomId')
+        window.localStorage.removeItem('lastSessionId')
+      })
+  }
+
   render () {
     return (
       <div>
@@ -86,6 +99,11 @@ class HomePage extends Component {
               <input className='u-full-width input-view' name='roomId' type='text' placeholder='Code...' />
             </form>
           </HiddenPanel>
+
+          {this.state.canReconnect &&
+            <div className='row'>
+              <button className='button u-full-width' onClick={this.handleReconnect}>Reconnect</button>
+            </div>}
         </div>
       </div>
     )
