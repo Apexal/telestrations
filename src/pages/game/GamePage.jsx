@@ -32,7 +32,8 @@ class GamePage extends Component {
       previousDrawingGuess: '',
       drawingStrokes: [],
       isDrawingStage: false,
-      isGameOver: false
+      isGameOver: false,
+      isPrivate:false
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -42,6 +43,7 @@ class GamePage extends Component {
     this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
     this.handlePreviousDrawingGuessUpdate = this.handlePreviousDrawingGuessUpdate.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handlePrivate = this.handlePrivate.bind(this)
   }
 
   getGameRoomId () {
@@ -159,6 +161,11 @@ class GamePage extends Component {
     })
   }
 
+  handlePrivate () {
+    const room = getGameRoom()
+    room.send('private') 
+  }
+  
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
