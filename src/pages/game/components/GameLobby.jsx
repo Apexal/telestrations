@@ -1,17 +1,19 @@
 import { Link } from 'react-router-dom'
+import config from '../../../config'
+
 import PlayerTag from './PlayerTag'
 
 export default function GameLobby ({
   roomId,
   sessionId,
-  hostPlayerClientId,
+  hostPlayerSessionId,
   players,
   maxPlayers,
   onChangeName,
   onStartGame,
   isPrivate
 }) {
-  const isHost = hostPlayerClientId === sessionId
+  const isHost = hostPlayerSessionId === sessionId
 
   const playerCount = Object.keys(players).length
 
@@ -19,13 +21,13 @@ export default function GameLobby ({
     <PlayerTag
       key={playerSessionId}
       isPlayer={playerSessionId === sessionId}
-      isHost={hostPlayerClientId === playerSessionId}
+      isHost={hostPlayerSessionId === playerSessionId}
       displayName={players[playerSessionId].displayName}
     />
   ))
 
-  const hostButton = playerCount % 2
-    ? <button className='button' disabled>Needs Even Players</button>
+  const hostButton = playerCount < config.minPlayers
+    ? <button className='button' disabled>Waiting For Players</button>
     : <button className='button' onClick={onStartGame}>Start Game</button>
 
   return (

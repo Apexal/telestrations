@@ -1,4 +1,5 @@
 import { Component, createRef } from 'react'
+import config from '../../../../config'
 import SketchControlBar from './SketchControlBar'
 
 /**
@@ -12,7 +13,7 @@ export default class SketchPadRenderer extends Component {
       currentX: -1,
       currentY: -1,
       width: 5,
-      color: 'black',
+      colorIndex: 0,
       strokes: [],
       context: null
     }
@@ -31,6 +32,8 @@ export default class SketchPadRenderer extends Component {
     this.onMouseReleased = this.onMouseReleased.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchStart = this.onTouchStart.bind(this)
+    this.handleToggleWidth = this.handleToggleWidth.bind(this)
+    this.handleCycleColor = this.handleCycleColor.bind(this)
   }
 
   componentDidMount () {
@@ -123,7 +126,7 @@ export default class SketchPadRenderer extends Component {
       toX: to.x,
       toY: to.y,
       width: this.state.width,
-      color: this.state.color
+      color: config.colors[this.state.colorIndex]
     }
 
     const strokes = this.props.drawingStrokes.concat(stroke)
@@ -155,6 +158,24 @@ export default class SketchPadRenderer extends Component {
 
     const pos = this.getMousePos(event.touches[0])
     this.setCurrentPosition(pos.x, pos.y)
+  }
+
+  handleToggleWidth () {
+    if (this.state.width === config.thinWidth) {
+      this.setState({
+        width: config.thickWidth
+      })
+    } else {
+      this.setState({
+        width: config.thinWidth
+      })
+    }
+  }
+
+  handleCycleColor () {
+    this.setState({
+      colorIndex: (this.state.colorIndex + 1) % config.colors.length
+    })
   }
 
   handleClear () {
@@ -189,8 +210,18 @@ export default class SketchPadRenderer extends Component {
   }
 
   render () {
+    const colorButtonStyle = {
+      width: this.state.width * 2,
+      height: this.state.width * 2,
+      backgroundColor: config.colors[this.state.colorIndex]
+    }
+
     return (
       <div>
+        <div>
+          <button className='button' onClick={this.handleToggleWidth}>{this.state.width === config.thickWidth ? <strong className='thick-stroke'>Thick</strong> : 'Thin'} Stroke</button>
+          <button className='button' onClick={this.handleCycleColor}><div className='color-preview' style={colorButtonStyle} /></button>
+        </div>
         <canvas id='canvas' ref={this.canvasRef} width='400' height='400'>
           Sorry, your browser does not support canvas.
         </canvas>

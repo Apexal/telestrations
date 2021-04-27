@@ -5,17 +5,23 @@ export default function GameOver (props) {
   const renderPlayerDrawingChain = (sessionId, player) => {
     const divs = []
     const playerIndex = props.playerKeys.findIndex(p => p === sessionId)
-    console.log(playerIndex, props.playerKeys)
     for (let roundIndex = 1; roundIndex <= props.playerKeys.length + (props.playerKeys.length % 2); roundIndex++) {
-      const player = props.players[props.playerKeys[(playerIndex + roundIndex) % props.playerKeys.length]]
+      let i = playerIndex - roundIndex + 1
+      if (i < 0) {
+        i = props.playerKeys.length - Math.abs(i)
+      }
+
+      const player = props.players[props.playerKeys[i]]
       const submission = player.submissions.find(sub => sub.roundIndex === roundIndex)
       divs.push(
-        <div key={playerIndex + '-' + roundIndex}>
-          <p>{player.displayName} guessed {submission.previousDrawingGuess}</p>
-          <p>{player.displayName} drew:</p>
+        <div className='submission' key={playerIndex + '-' + roundIndex}>
+          {roundIndex === 1
+            ? <p>And they first drew...</p>
+            : <p>Then, <strong>{player.displayName}</strong> guessed and drew...</p>}
           <CanvasDisplay
             drawingStrokes={submission.drawingStrokes}
           />
+          <h2 className='title label'>{submission.previousDrawingGuess}</h2>
         </div>
       )
     }
@@ -28,9 +34,9 @@ export default function GameOver (props) {
       <h3 className='fancy center'>Check out the crazy drawing chains!</h3>
 
       {Object.entries(props.players).map(([key, player]) => (
-        <div key={key}>
+        <div className='drawing-chain' key={key}>
           <details>
-            <summary><strong>{player.displayName}</strong>: <span className='fancy'>{player.secretWord}</span></summary>
+            <summary><strong>{player.displayName}</strong>'s secret word was <span className='title'>{player.secretWord}</span></summary>
             {renderPlayerDrawingChain(key, player)}
           </details>
         </div>
