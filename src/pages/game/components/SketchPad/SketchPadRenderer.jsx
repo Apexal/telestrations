@@ -123,8 +123,8 @@ export default class SketchPadRenderer extends Component {
     const to = this.getMousePos(event)
 
     const stroke = {
-      fromX: this.state.currentX,
-      fromY: this.state.currentY,
+      fromX: this.state.currentX === -1 ? to.x : this.state.currentX,
+      fromY: this.state.currentY === -1 ? to.y : this.state.currentY,
       toX: to.x,
       toY: to.y,
       width: this.state.width,
