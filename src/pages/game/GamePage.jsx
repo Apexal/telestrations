@@ -33,7 +33,7 @@ class GamePage extends Component {
       drawingStrokes: [],
       isDrawingStage: false,
       isGameOver: false,
-      isPrivate:false
+      isPublic: true
     }
 
     this.getGameRoomId = this.getGameRoomId.bind(this)
@@ -43,7 +43,7 @@ class GamePage extends Component {
     this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
     this.handlePreviousDrawingGuessUpdate = this.handlePreviousDrawingGuessUpdate.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handlePrivate = this.handlePrivate.bind(this)
+    //this.handlePrivate = this.handlePrivate.bind(this)
   }
 
   getGameRoomId () {
@@ -81,7 +81,7 @@ class GamePage extends Component {
 
     room.state.onChange = (changes) => {
       changes.forEach(change => {
-        if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining'].includes(change.field)) {
+        if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining','isPublic'].includes(change.field)) {
           this.setState({ [change.field]: change.value })
         }
       })

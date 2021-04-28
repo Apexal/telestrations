@@ -11,7 +11,7 @@ export default function GameLobby ({
   maxPlayers,
   onChangeName,
   onStartGame,
-  isPrivate
+  isPublic
 }) {
   const isHost = hostPlayerSessionId === sessionId
 
@@ -33,7 +33,7 @@ export default function GameLobby ({
   return (
     <div className='game-lobby'>
       <div className='supertext center'>your room code is...</div>
-      <button className='button' onClick={isPrivate}>Make Room Private</button>
+      <button className='button' onClick={isPublic}>Make Room Private</button>
       <h1 className='title room-code-anim'>{roomId}</h1>
 
       <h5>{playerCount} / {maxPlayers} players</h5>
