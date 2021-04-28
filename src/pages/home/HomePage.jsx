@@ -47,7 +47,6 @@ class HomePage extends Component {
     })
   }
 
- 
   handleHostGame () {
     hostGame()
       .then((room) => {

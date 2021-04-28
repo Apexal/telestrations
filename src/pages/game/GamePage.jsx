@@ -43,7 +43,7 @@ class GamePage extends Component {
     this.handleDrawingStrokesUpdate = this.handleDrawingStrokesUpdate.bind(this)
     this.handlePreviousDrawingGuessUpdate = this.handlePreviousDrawingGuessUpdate.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    //this.handlePrivate = this.handlePrivate.bind(this)
+    this.handleToggleRoomVisibility = this.handleToggleRoomVisibility.bind(this)
   }
 
   getGameRoomId () {
@@ -81,7 +81,8 @@ class GamePage extends Component {
 
     room.state.onChange = (changes) => {
       changes.forEach(change => {
-        if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining','isPublic'].includes(change.field)) {
+        if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining', 'isPublic'].includes(change.field)) {
+          console.log(change.field, change.value)
           this.setState({ [change.field]: change.value })
         }
       })
@@ -155,11 +156,11 @@ class GamePage extends Component {
     })
   }
 
-  handlePrivate () {
+  handleToggleRoomVisibility () {
     const room = getGameRoom()
-    room.send('private') 
+    room.send('set_room_visibility', { isPublic: !this.state.isPublic })
   }
-  
+
   async componentDidMount () {
     const roomId = this.getGameRoomId()
 
@@ -223,6 +224,7 @@ class GamePage extends Component {
         return (
           <GameLobby
             roomId={this.state.roomId}
+            isPublic={this.state.isPublic}
             sessionId={this.state.sessionId}
             hostPlayerSessionId={this.state.hostPlayerSessionId}
             players={this.state.players}
@@ -230,6 +232,7 @@ class GamePage extends Component {
             onDrawingStrokesUpdate={this.handleDrawingStrokesUpdate}
             onChangeName={this.handleChangeName}
             onStartGame={this.handleStartGame}
+            onToggleRoomVisibility={this.handleToggleRoomVisibility}
           />
         )
       } else if (this.state.isGameOver) {
