@@ -83,15 +83,17 @@ export default class SketchPadRenderer extends Component {
   }
 
   optimizeStrokes (anyStrokes) {
-    for (let i = 2; i < anyStrokes.length; i++) {
-      const stroke = anyStrokes[i]
-      const prevStroke = anyStrokes[i - 1]
-      const prevPrevStroke = anyStrokes[i - 2]
+    for (let t = 0; t <= 2; t++) {
+      for (let i = 2; i < anyStrokes.length; i++) {
+        const stroke = anyStrokes[i]
+        const prevStroke = anyStrokes[i - 1]
+        const prevPrevStroke = anyStrokes[i - 2]
 
-      if (this.distance(prevStroke.fromX, prevStroke.fromY, stroke.fromX, stroke.fromY) <= 2 && this.samePos(prevPrevStroke.toX, prevPrevStroke.toY, prevStroke.fromX, prevStroke.fromY)) {
-        anyStrokes.splice(i - 1, 1)
-        prevPrevStroke.toX = stroke.fromX
-        prevPrevStroke.toY = stroke.fromY
+        if (this.distance(prevStroke.fromX, prevStroke.fromY, stroke.fromX, stroke.fromY) <= 5 && this.samePos(prevPrevStroke.toX, prevPrevStroke.toY, prevStroke.fromX, prevStroke.fromY)) {
+          anyStrokes.splice(i - 1, 1)
+          prevPrevStroke.toX = stroke.fromX
+          prevPrevStroke.toY = stroke.fromY
+        }
       }
     }
   }
@@ -130,7 +132,6 @@ export default class SketchPadRenderer extends Component {
     }
 
     const strokes = this.props.drawingStrokes.concat(stroke)
-    this.optimizeStrokes(strokes)
     this.props.onDrawingStrokesUpdate(strokes)
 
     this.drawStroke(stroke)
@@ -138,6 +139,9 @@ export default class SketchPadRenderer extends Component {
   }
 
   onMouseReleased () {
+    const strokes = [...this.props.drawingStrokes]
+    this.optimizeStrokes(strokes)
+    this.props.onDrawingStrokesUpdate(strokes)
     this.redraw()
   }
 
@@ -161,15 +165,9 @@ export default class SketchPadRenderer extends Component {
   }
 
   handleToggleWidth () {
-    if (this.state.width === config.thinWidth) {
-      this.setState({
-        width: config.thickWidth
-      })
-    } else {
-      this.setState({
-        width: config.thinWidth
-      })
-    }
+    this.setState({
+      width: this.state.width === config.thinWidth ? config.thickWidth : config.thinWidth
+    })
   }
 
   handleCycleColor () {
@@ -191,7 +189,6 @@ export default class SketchPadRenderer extends Component {
       strokes.pop()
     }
 
-    this.optimizeStrokes(strokes)
     this.props.onDrawingStrokesUpdate(strokes, this.redraw)
   }
 

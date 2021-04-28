@@ -82,7 +82,6 @@ class GamePage extends Component {
     room.state.onChange = (changes) => {
       changes.forEach(change => {
         if (['hostPlayerSessionId', 'maxPlayers', 'roundIndex', 'isGameOver', 'roundTimerSecondsRemaining', 'isPublic'].includes(change.field)) {
-          console.log(change.field, change.value)
           this.setState({ [change.field]: change.value })
         }
       })
