@@ -19,7 +19,6 @@ class HomePage extends Component {
     }
 
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
-    this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
     this.handleSetPublicRooms = this.handleSetPublicRooms.bind(this)
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
@@ -38,6 +37,12 @@ class HomePage extends Component {
 
   handleShowPrivateGame () {
     this.setState({ showPrivateGame: !this.state.showPrivateGame })
+  }
+
+  handleSetPrivateRooms (privateRooms) {
+    this.setState({
+      privateRooms
+    })
   }
 
   handleHostGame () {
@@ -66,6 +71,10 @@ class HomePage extends Component {
         window.alert(err)
         window.localStorage.removeItem('lastRoomId')
         window.localStorage.removeItem('lastSessionId')
+
+        this.setState({
+          canReconnect: false
+        })
       })
   }
 

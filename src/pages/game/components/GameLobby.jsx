@@ -10,7 +10,9 @@ export default function GameLobby ({
   players,
   maxPlayers,
   onChangeName,
-  onStartGame
+  onStartGame,
+  isPublic,
+  onToggleRoomVisibility
 }) {
   const isHost = hostPlayerSessionId === sessionId
 
@@ -41,6 +43,7 @@ export default function GameLobby ({
       </ul>
 
       {isHost ? hostButton : <Link className='button' to='/'>Leave</Link>}
+      {isHost && <button className='button' onClick={onToggleRoomVisibility}>Make Room {isPublic ? 'Private' : 'Public'}</button>}
       {players[sessionId] &&
         <button className='button u-pull-right' onClick={onChangeName}>Change Name</button>}
     </div>
