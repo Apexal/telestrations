@@ -1,6 +1,7 @@
 import { Component } from 'react'
-import { hostGame, reconnectToGameRoom } from '../../services/client'
 import { withRouter } from 'react-router'
+
+import client from '../../services/client'
 
 import '../../styles/homepage.css'
 import HiddenPanel from '../../components/HiddenPanel'
@@ -40,7 +41,7 @@ class HomePage extends Component {
   }
 
   handleHostGame () {
-    hostGame()
+    client.hostGame()
       .then((room) => {
         this.props.history.push('/' + room.id, { isHost: true })
       })
@@ -57,7 +58,7 @@ class HomePage extends Component {
   }
 
   handleReconnect () {
-    reconnectToGameRoom()
+    client.reconnectToGameRoom()
       .then((room) => {
         this.props.history.push('/' + room.id, { isReconnecting: true })
       })

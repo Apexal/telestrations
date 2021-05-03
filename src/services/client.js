@@ -1,100 +1,112 @@
 import * as colyseus from 'colyseus.js'
 import config from '../config'
 
-const client = new colyseus.Client('ws://' + config.serverURL)
-
-let lobby = null
-
 /**
- * Connects to the Lobby room and creates it if it doesn't exist.
- *
- * @returns {Promise<Room>} Connected lobby room
- * @throws Error if failed to create lobby room for any reason
+ * Colyseus client that exposes limited functionality
+ * to external users. Allows connecting to the lobby
+ * and game rooms.
  */
-export async function joinLobby () {
-  if (lobby !== null) return lobby
+class Client {
+  constructor () {
+    this.client = new colyseus.Client('ws://' + config.serverURL)
+    this.lobby = null
+    this.gameRoom = null
+  }
 
-  lobby = await client.joinOrCreate('lobby')
+  /**
+   * Connects to the Lobby room and creates it if it doesn't exist.
+   *
+   * @returns {Promise<Room>} Connected lobby room
+   * @throws Error if failed to create lobby room for any reason
+   */
+  async joinLobby () {
+    if (this.lobby !== null) return this.lobby
 
-  return lobby
+    this.lobby = await this.client.joinOrCreate('lobby')
+
+    return this.lobby
+  }
+
+  /**
+   * Disconnect from the lobby.
+   */
+  leaveLobby () {
+    if (this.lobby === null) return
+
+    this.lobby.removeAllListeners()
+    this.lobby.leave()
+    this.lobby = null
+  }
+
+  /**
+   * Creates a new game room and connects to it.
+   *
+   * @returns {Promise<Room>} Newly created and connected game room
+   * @throws Error if failed to create room for any reason
+   */
+  async hostGame () {
+    if (this.gameRoom !== null) throw Error('Game room is not null!')
+
+    this.leaveLobby()
+
+    this.gameRoom = await this.client.create('game_room')
+
+    return this.gameRoom
+  }
+
+  /**
+   * Attempts to connect to game room identified by a room id.
+   *
+   * @param {string} roomId Unique identifier of game room, e.g. "OEGHW"
+   * @returns {Promise<colyseus.Room>} Newly connected game room
+   * @throws Error if game room doesn't exist or failed to connect
+   */
+  async joinGameRoom (roomId) {
+    this.leaveLobby()
+
+    this.gameRoom = await this.client.joinById(roomId)
+
+    // Save room id for reconnects
+    window.localStorage.setItem('lastRoomId', roomId)
+    window.localStorage.setItem('lastSessionId', this.gameRoom.sessionId)
+
+    return this.gameRoom
+  }
+
+  /**
+   * Attempt to reconnect to the last game room.
+   */
+  async reconnectToGameRoom () {
+    const lastRoomId = window.localStorage.getItem('lastRoomId')
+    const lastSessionId = window.localStorage.getItem('lastSessionId')
+
+    this.gameRoom = await this.client.reconnect(lastRoomId, lastSessionId)
+
+    return this.gameRoom
+  }
+
+  /**
+   * Return the currently connected game room or null if not connected.
+   *
+   * @returns {colyseus.Room} Currently connected game room
+   */
+  getGameRoom () {
+    return this.gameRoom
+  }
+
+  /**
+   * Leave the currently connected game room or do nothing if not connected.
+   */
+  leaveGameRoom () {
+    if (this.gameRoom === null) return
+
+    window.localStorage.removeItem('lastRoomId')
+    window.localStorage.removeItem('lastSessionId')
+
+    this.gameRoom.removeAllListeners()
+    this.gameRoom.leave()
+    this.gameRoom = null
+  }
 }
 
-/**
- * Disconnect from the lobby.
- */
-export function leaveLobby () {
-  if (lobby === null) return
-
-  lobby.removeAllListeners()
-  lobby.leave()
-  lobby = null
-}
-
-let gameRoom = null
-
-/**
- * Creates a new game room and connects to it.
- *
- * @returns {Promise<Room>} Newly created and connected game room
- * @throws Error if failed to create room for any reason
- */
-export async function hostGame () {
-  if (gameRoom !== null) throw Error('Game room is not null!')
-
-  leaveLobby()
-
-  gameRoom = await client.create('game_room')
-
-  return gameRoom
-}
-
-/**
- * Attempts to connect to game room identified by a room id.
- *
- * @param {string} roomId Unique identifier of game room, e.g. "OEGHW"
- * @returns {Promise<colyseus.Room>} Newly connected game room
- * @throws Error if game room doesn't exist or failed to connect
- */
-export async function joinGameRoom (roomId) {
-  leaveLobby()
-
-  gameRoom = await client.joinById(roomId)
-
-  // Save room id for reconnects
-  window.localStorage.setItem('lastRoomId', roomId)
-  window.localStorage.setItem('lastSessionId', gameRoom.sessionId)
-
-  return gameRoom
-}
-
-/**
- * Attempt to reconnect to the last game room.
- */
-export async function reconnectToGameRoom () {
-  const lastRoomId = window.localStorage.getItem('lastRoomId')
-  const lastSessionId = window.localStorage.getItem('lastSessionId')
-
-  gameRoom = await client.reconnect(lastRoomId, lastSessionId)
-
-  return gameRoom
-}
-
-/**
- * Return the currently connected game room or null if not connected.
- *
- * @returns {colyseus.Room} Currently connected game room
- */
-export function getGameRoom () {
-  return gameRoom
-}
-
-export function leaveGameRoom () {
-  if (gameRoom === null) return
-
-  window.localStorage.removeItem('lastRoomId')
-  window.localStorage.removeItem('lastSessionId')
-
-  gameRoom.removeAllListeners()
-  gameRoom.leave()
-  gameRoom = null
-}
+export default new Client()

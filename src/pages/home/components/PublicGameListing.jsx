@@ -1,10 +1,10 @@
 import { Component } from 'react'
-import { joinLobby, leaveLobby } from '../../../services/client'
+import client from '../../../services/client'
 import { Link } from 'react-router-dom'
 
 export default class PublicGameListing extends Component {
   async componentDidMount () {
-    const lobby = await joinLobby()
+    const lobby = await client.joinLobby()
 
     // The rooms event is from the built-in Colyseus lobby room
     lobby.onMessage('rooms', rooms => {
@@ -31,7 +31,7 @@ export default class PublicGameListing extends Component {
   }
 
   componentWillUnmount () {
-    leaveLobby()
+    client.leaveLobby()
   }
 
   renderPublicGames () {
