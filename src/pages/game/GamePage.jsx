@@ -4,7 +4,7 @@ import GameLobby from './components/GameLobby'
 import GameRound from './components/GameRound'
 import GameOver from './components/GameOver'
 
-import { getGameRoom, joinGameRoom, leaveGameRoom } from '../../services/client'
+import client from '../../services/client'
 
 import '../../styles/game.css'
 import Error from '../../components/Error'
@@ -59,7 +59,7 @@ class GamePage extends Component {
   }
 
   setupGameRoomEventListeners () {
-    const room = getGameRoom()
+    const room = client.getGameRoom()
 
     room.onMessage('error', window.alert)
 
@@ -111,7 +111,7 @@ class GamePage extends Component {
 
     room.onLeave((code) => {
       window.alert('Lost connection to the game room...')
-      leaveGameRoom()
+      client.leaveGameRoom()
       this.props.history.push('/')
     })
 
@@ -124,12 +124,12 @@ class GamePage extends Component {
   handleChangeName () {
     const newDisplayName = window.prompt('New name?')
 
-    const room = getGameRoom()
+    const room = client.getGameRoom()
     room.send('player_set_displayName', { displayName: newDisplayName })
   }
 
   handleStartGame () {
-    const room = getGameRoom()
+    const room = client.getGameRoom()
     room.send('start_game')
   }
 
@@ -147,7 +147,7 @@ class GamePage extends Component {
   }
 
   handleSubmit () {
-    const room = getGameRoom()
+    const room = client.getGameRoom()
     room.send('player_submit_submission', {
       roundIndex: this.state.roundIndex,
       previousDrawingGuess: this.state.previousDrawingGuess,
@@ -156,7 +156,7 @@ class GamePage extends Component {
   }
 
   handleToggleRoomVisibility () {
-    const room = getGameRoom()
+    const room = client.getGameRoom()
     room.send('set_room_visibility', { isPublic: !this.state.isPublic })
   }
 
@@ -172,7 +172,7 @@ class GamePage extends Component {
     //    - game room must be joined at this point
 
     if (this.props.location.state && (this.props.location.state.isHost || this.props.location.state.isReconnecting)) {
-      const room = getGameRoom()
+      const room = client.getGameRoom()
       if (room === null) {
         // Refreshed page! game is dead
         this.setState({
@@ -192,7 +192,7 @@ class GamePage extends Component {
       }
     } else {
       try {
-        const room = await joinGameRoom(roomId)
+        const room = await client.joinGameRoom(roomId)
 
         this.setState({
           sessionId: room.sessionId,
@@ -214,7 +214,7 @@ class GamePage extends Component {
   }
 
   componentWillUnmount () {
-    leaveGameRoom()
+    client.leaveGameRoom()
   }
 
   renderGameComponent () {
