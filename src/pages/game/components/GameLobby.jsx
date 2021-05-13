@@ -43,9 +43,9 @@ export default function GameLobby ({
       </ul>
 
       {isHost ? hostButton : <Link className='button' to='/'>Leave</Link>}
-      {isHost && <button className='button' onClick={onToggleRoomVisibility}>Make Room {isPublic ? 'Private' : 'Public'}</button>}
+      {isHost && <button className='button' title={'Click to make ' + (isPublic ? 'private.' : 'public.')} onClick={onToggleRoomVisibility}>{isPublic ? '🔓 Public' : '🔒 Private'}</button>}
       {players[sessionId] &&
-        <button className='button u-pull-right' onClick={onChangeName}>Change Name</button>}
+        <button className='button u-pull-right' onClick={onChangeName}>✏️ Change Name</button>}
     </div>
   )
 }
