@@ -37,7 +37,7 @@ export default class PublicGameListing extends Component {
   renderPublicGames () {
     if (this.props.publicRooms.length <= 0) { return <div className='center'><i>There are no open public rooms!</i></div> }
 
-    return this.props.publicRooms.map((room, roomIndex) => (
+    return this.props.publicRooms.filter(room => room.clients > 0).map((room, roomIndex) => (
       <div className='row' key={room.roomId}>
         <Link to={'/' + room.roomId} className='button u-full-width'>
           Game {room.roomId} <span className='u-pull-right'>({room.clients} / {room.maxClients})</span>
