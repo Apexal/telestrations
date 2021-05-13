@@ -19,6 +19,7 @@ class HomePage extends Component {
     }
 
     this.handleShowPublicGames = this.handleShowPublicGames.bind(this)
+    this.handleShowPrivateGame = this.handleShowPrivateGame.bind(this)
     this.handleHostGame = this.handleHostGame.bind(this)
     this.handleSetPublicRooms = this.handleSetPublicRooms.bind(this)
     this.handleJoinPrivateGame = this.handleJoinPrivateGame.bind(this)
