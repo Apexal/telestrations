@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/telestrations/static/css/main.c51ce1ee.chunk.css",
+    "main.js": "/telestrations/static/js/main.7cb272ed.chunk.js",
+    "main.js.map": "/telestrations/static/js/main.7cb272ed.chunk.js.map",
+    "runtime-main.js": "/telestrations/static/js/runtime-main.727da831.js",
+    "runtime-main.js.map": "/telestrations/static/js/runtime-main.727da831.js.map",
+    "static/js/2.364ec823.chunk.js": "/telestrations/static/js/2.364ec823.chunk.js",
+    "static/js/2.364ec823.chunk.js.map": "/telestrations/static/js/2.364ec823.chunk.js.map",
+    "static/js/3.9ece190c.chunk.js": "/telestrations/static/js/3.9ece190c.chunk.js",
+    "static/js/3.9ece190c.chunk.js.map": "/telestrations/static/js/3.9ece190c.chunk.js.map",
+    "index.html": "/telestrations/index.html",
+    "static/css/main.c51ce1ee.chunk.css.map": "/telestrations/static/css/main.c51ce1ee.chunk.css.map",
+    "static/js/2.364ec823.chunk.js.LICENSE.txt": "/telestrations/static/js/2.364ec823.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.727da831.js",
+    "static/js/2.364ec823.chunk.js",
+    "static/css/main.c51ce1ee.chunk.css",
+    "static/js/main.7cb272ed.chunk.js"
+  ]
+}
