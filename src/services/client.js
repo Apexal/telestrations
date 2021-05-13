@@ -8,7 +8,7 @@ import config from '../config'
  */
 class Client {
   constructor () {
-    this.client = new colyseus.Client('ws://' + config.serverURL)
+    this.client = new colyseus.Client('wss://' + config.serverURL)
     this.lobby = null
     this.gameRoom = null
   }
